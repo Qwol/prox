@@ -1,0 +1,6 @@
+{
+  "PORT": 8080,
+  "MONGODB_ACCOUNTS": "localhost:27017/Accounts", 
+  "MONGODB_USERS": "localhost:27017/Users",
+  "FILE": "/home/sergey/Github/adminka/prox/public/chap-secrets"
+}
