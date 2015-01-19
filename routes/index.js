@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
-var getFile = require('../utils/read-file.js');
+var getFile = require('../utils/read-file.js').str;
 
 /* GET home page. */
 router.get('/', function(req, res) {
