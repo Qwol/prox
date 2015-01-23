@@ -1,12 +1,13 @@
 var express = require('express');
 var router = express.Router();
 
-var getFile = require('../utils/read-file.js').str;
+var getFileStr = require('../utils/read-file.js').str;
+var getFileObj = require('../utils/read-file.js').obj;
 
 /* GET home page. */
 router.get('/', function(req, res) {
-  getFile(function (file) {
-    res.end(file);
+  getFileObj(function (file) {
+    res.send(file);
   });  
 });
 
