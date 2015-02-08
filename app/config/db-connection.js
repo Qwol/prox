@@ -17,7 +17,7 @@ var connectWithRetry = function(connection, url) {
 console.log('start db_users connection: ' + config.db_users);
 var db_users = mongoose.createConnection();
 
-connectWithRetry(db_users, config.main_db);
+connectWithRetry(db_users, config.db_users);
 
 db_users.on('open', function (ref) {
     console.log('open connection to mongo server: db_users');

@@ -1,5 +1,5 @@
 {
   "PORT": 8080,
   "MONGODB_USERS": "localhost:27017/Users",
-  "FILE": "/home/sergey/Github/adminka/prox/public/chap-secrets"
+  "FILE": "/home/sergey/Projects/chap-secrets"
 }

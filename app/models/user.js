@@ -1,15 +1,15 @@
 var mongoose = require('mongoose');
-var db_users   = require('../config/db-connection.js').db_users;
+var connection   = require('../config/db-connection.js').db_users;
 
 var userSchema = mongoose.Schema({
   login: String,
   password: String,
-  email: String,
+  ip: String,
   end_date: Date
 });
 
 module.exports = function (callback) {
-  if (db_users.readyState === 1) callback(null, db_users.model('users', userSchema));
+  if (connection.readyState === 1) callback(null, connection.model('users', userSchema));
   else callback({message: 'No connection to the database: db_users', status: 500});
 };
 
