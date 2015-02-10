@@ -5,6 +5,7 @@ var userSchema = mongoose.Schema({
   login: String,
   password: String,
   ip: String,
+  status: Number,
   end_date: Date
 });
 
