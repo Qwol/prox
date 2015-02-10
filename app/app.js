@@ -31,8 +31,8 @@ app.use(function(req, res, next) {
 if (app.get('env') === 'development') {
     app.use(function(err, req, res, next) {
         res.status(err.status || 500);
-        if (err.stack) res.end(err.stack);
-        else res.end(err.message); 
+        if (err.stack) res.send(err);
+        else res.send(err); 
     });
 }
 
@@ -40,7 +40,7 @@ if (app.get('env') === 'development') {
 // no stacktraces leaked to user
 app.use(function(err, req, res, next) {
     res.status(err.status || 500);
-    res.end(err.message);
+    res.send(err);
 });
 
 module.exports = app;
