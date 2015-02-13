@@ -5,10 +5,27 @@ module.exports = function (rows, callback) {
   row(function (err, model) {
     if (err) callback(err);
     else {
-      model.update(condition, { status: 1}, { multi: true }, function (err, numberAffected) {
+      model.find(condition, function (err, docs) {
         if (err) return callback(err);
-        else callback(null, numberAffected);
+        else if (docs) {
+          var str = '';
+          docs.forEach(function (item, index) {
+            str += 'Login: ';
+            str += item.login;
+            str += '\t||\t';
+            str += 'Password: ';
+            str += item.password;        
+            if (index < (docs.length - 1)) str += '\n';
+          });
+
+          model.update(condition, { status: 1}, { multi: true }, function (err, numberAffected, raw) {            
+            if (err) return callback(err);
+            else callback(null, str);            
+          });
+        } else callback(new Error('Cant finde any rows by this query'));
       });
+
+
     }
   });
 };
