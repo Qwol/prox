@@ -4,6 +4,7 @@ var add_row = require('./utils/add-row');
 var write_file = require('./utils/write-file');
 var switch_on = require('./utils/switch-on');
 var switch_off = require('./utils/switch-off');
+var show_rows = require('./utils/show-rows');
 var moment = require('moment');
 
 //add new row
@@ -23,6 +24,16 @@ router.copy('/rows', function(req, res, next) {
     if (err) next(err);
     else {
       res.end({saved: true});
+    }
+  });
+});
+
+//show all rows
+router.get('/rows', function(req, res, next) {
+  show_rows(function (err, rows) {
+    if (err) next(err);
+    else {
+      res.send(rows);
     }
   });
 });
@@ -59,6 +70,18 @@ router.get('/rows/switchoff', function(req, res, next) {
       res.end('OK');
     }
   });
+});
+
+router.get('/', function(req, res) {
+  show_rows(function (err, rows) {
+    if (err) next(err);
+    else {
+      res.render('pages/index', {
+        rows: rows
+      });
+    }
+  });
+        
 });
 
 module.exports = router;

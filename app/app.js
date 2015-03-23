@@ -9,6 +9,11 @@ var routes = require('./routes');
 
 var app = express();
 app.set('port', config.port);
+// app.use(express.compress());
+// set the view engine to ejs
+app.set('views', __dirname +'/views')
+app.set('view engine', 'ejs');
+app.use(express.static(__dirname + '/public', { maxAge: 86400000 }));
 
 app.use(logger('dev'));
 app.use(bodyParser.json());
