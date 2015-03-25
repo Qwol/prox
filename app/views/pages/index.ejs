@@ -1,43 +1,82 @@
-<link href="/stylesheets/bootstrap.min.css" rel="stylesheet" type="text/css">
 <link href="/stylesheets/jquery.dataTables.css" rel="stylesheet" type="text/css">
-<script type="text/javascript" src="javascripts/jquery-2.1.3.min.js"></script>
-<script type="text/javascript" src="javascripts/bootstrap.min.js"></script>
-<script type="text/javascript" src="javascripts/jquery.dataTables.min.js"></script>
+<link rel="stylesheet" type="text/css" href="/stylesheets/dataTables.tableTools.css">
+<link href="/stylesheets/bootstrap.min.css" rel="stylesheet" type="text/css">
+
+<script type="text/javascript" src="/javascripts/jquery-2.1.3.min.js"></script>
+<script type="text/javascript" src="/javascripts/bootstrap.min.js"></script>
+<script type="text/javascript" src="/javascripts/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="/javascripts/dataTables.tableTools.js"></script>
+<script type="text/javascript" src="/javascripts/dataTables.editor.js"></script>
 <script type="text/javascript">
   $(document).ready(function() { 
-        // $("#myTable").tablesorter(); 
-        $('#myTable').DataTable({
-            paging: false,
-            scrollY: 400
-        });
+      $('#main_table').DataTable({
+        sDom: 'T<"clear ">lfrtip',
+        paging: false,
+        scrollY: 400,
+        columnDefs: [
+          {
+            "targets": [ 0 ],
+            "visible": false,
+            "searchable": false
+          }
+        ],
+        ajax: {
+          url: "/rows",              
+          type: "GET",
+          dataSrc: ""
+        },
+        columns: [
+          { data: '_id' },
+          { data: 'login' },
+          { data: 'password' },
+          { data: 'ip' },
+          { data: 'status' },
+          { data: 'end' }
+        ],
+        order: [ 1, 'asc' ],
+        tableTools: {
+          sRowSelect: "os",
+          sRowSelector: 'tr',
+          aButtons: [
+            { sExtends: "select_none", sButtonClass: "btn btn-default", sButtonText: "New", fnClick: function ( nButton, oConfig, oFlash ) {
+              var aData = oTT.fnGetSelectedData();
+              console.log( aData );
+            }},
+            { sExtends: "select_single", sButtonClass: "btn btn-default", sButtonText: "Edit", fnClick: function ( nButton, oConfig, oFlash ) {
+              var aData = oTT.fnGetSelectedData();
+              console.log( aData );
+            }},
+            { sExtends: "select", sButtonClass: "btn btn-default", sButtonText: "Delete", fnClick: function ( nButton, oConfig, oFlash ) {
+              var aData = oTT.fnGetSelectedData();
+              console.log( aData );
+            }}
+          ]
+        }
+      });
+
+      var oTT = TableTools.fnGetInstance( 'main_table' );
     } 
 ); 
 </script>
 <div class="container">
   <div class="row">
-    <%- include('nav'); %>
+    <div class="col-xs-12">
+<!--       <%- include('nav'); %> -->
+    </div>
   </div>
   <div class="row">
     <div class="col-xs-12">
-      <table id="myTable" class="tablesorter table">
+      <table id="main_table" class="table table-striped table-bordered">
         <thead> 
           <tr> 
-              <th>Login</th> 
-              <th>Password</th> 
-              <th>IP</th> 
-              <th>Status</th> 
+            <th>ID</th> 
+            <th>Login</th> 
+            <th>Password</th> 
+            <th>IP</th> 
+            <th>Status</th> 
+            <th>End</th> 
           </tr> 
-        </thead> 
-        <tbody> 
-        <% rows.forEach(function(row){ %>
-          <tr>
-            <td><%= row.login %></td>
-            <td><%= row.password %></td>
-            <td><%= row.ip %></td>
-            <td><%= row.status %></td>
-          </tr>
-        <% }); %>
-        </tbody> 
+        </thead>  
       </table>
     </div>
   </div>
