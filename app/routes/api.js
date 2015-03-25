@@ -1,10 +1,10 @@
 var express = require('express');
 var router = express.Router();
-var add_row = require('./utils/add-row');
-var write_file = require('./utils/write-file');
-var switch_on = require('./utils/switch-on');
-var switch_off = require('./utils/switch-off');
-var show_rows = require('./utils/show-rows');
+var add_row = require('../utils/add-row');
+var write_file = require('../utils/write-file');
+var switch_on = require('../utils/switch-on');
+var switch_off = require('../utils/switch-off');
+var show_rows = require('../utils/show-rows');
 var moment = require('moment');
 
 //add new row

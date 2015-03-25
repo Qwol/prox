@@ -1,8 +1,39 @@
 <link href="/stylesheets/bootstrap.min.css" rel="stylesheet" type="text/css">
+<link href="/stylesheets/tablesorter.css" rel="stylesheet" type="text/css">
 <script type="text/javascript" src="javascripts/jquery-1.11.2.min.js"></script>
 <script type="text/javascript" src="javascripts/bootstrap.min.js"></script>
-<table class="table">
-<% rows.forEach(function(row){ %>
-	<%- include('row/show', {row: row}); %>
-<% }); %>
-</table>
+<script type="text/javascript" src="javascripts/jquery.tablesorter.min.js"></script>
+<script type="text/javascript">
+  $(document).ready(function() 
+    { 
+        $("#myTable").tablesorter(); 
+    } 
+); 
+</script>
+<div class="container">
+  
+  <div class="row">
+    <div class="col-xs-12">
+      <table id="myTable" class="tablesorter table">
+        <thead> 
+          <tr> 
+              <th>Login</th> 
+              <th>Password</th> 
+              <th>IP</th> 
+              <th>Status</th> 
+          </tr> 
+        </thead> 
+        <tbody> 
+        <% rows.forEach(function(row){ %>
+          <tr>
+            <td><%= row.login %></td>
+            <td><%= row.password %></td>
+            <td><%= row.ip %></td>
+            <td><%= row.status %></td>
+          </tr>
+        <% }); %>
+        </tbody> 
+      </table>
+    </div>
+  </div>
+</div>

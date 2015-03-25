@@ -5,7 +5,7 @@ var bodyParser = require('body-parser');
 
 var config = require('./config/app-config.js');
 
-var routes = require('./routes');
+var api = require('./routes/api');
 
 var app = express();
 app.set('port', config.port);
@@ -20,7 +20,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-app.use(routes);
+app.use(api);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
