@@ -1,0 +1,15 @@
+<script type="text/javascript">
+  $(document).ready(function() 
+    { 
+      $('#head-nav a').click(function (e) {
+        e.preventDefault();
+        $(this).tab('show');
+      });
+    } 
+  ); 
+</script>
+<ul id="head-nav" class="nav nav-tabs">
+  <li role="presentation" class="active"><a href="#">Home</a></li>
+  <li role="presentation"><a href="#">Profile</a></li>
+  <li role="presentation"><a href="#">Messages</a></li>
+</ul>
