@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var add_row = require('../utils/add-row');
+var remove_row = require('../utils/remove-row');
 var write_file = require('../utils/write-file');
 var switch_on = require('../utils/switch-on');
 var switch_off = require('../utils/switch-off');
@@ -14,6 +15,18 @@ router.post('/rows', function(req, res, next) {
     if (err) next(err);
     else {
       res.send(saved_data);
+    }
+  });
+});
+
+//remove one row
+router.delete('/rows', function(req, res, next) {
+  console.log(req.body);
+  remove_row(req.body, function (err, answer) {
+    console.log(answer);
+    if (err) next(err);
+    else {
+      res.send(answer);
     }
   });
 });
