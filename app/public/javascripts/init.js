@@ -1,3 +1,11 @@
+function getRndPass () {  
+  return Math.random().toString(36).slice(2, 12);
+}
+
+function getRndLogin () {  
+  return Math.random().toString().slice(2, 12);
+}
+
 $(document).ready(function() {     
     var table = $('#main_table').DataTable({
       sDom: 'T<"clear ">lfrtip',
@@ -55,12 +63,18 @@ $(document).ready(function() {
       ],
       order: [ 1, 'asc' ],
       tableTools: {
-        sRowSelect: "single",
+        sRowSelect: "os",
         sRowSelector: 'tr',
         aButtons: []
       }
     });
-    
+
+    var oTT = TableTools.fnGetInstance('main_table');
+
+    table.on( 'draw', function () {
+      oTT.fnSelectNone();
+    });
+
     $('#myModal').on('hidden.bs.modal', function (event) {
       var modal = $(this);
       modal.find('.modal-title').text('');
@@ -75,15 +89,23 @@ $(document).ready(function() {
       var modal = $(this);
 
       switch (type) {
-        case 'create':
+        case 'create':          
           var modal = $(this);
+          var login = getRndLogin();
+          var pass = getRndPass();
           modal.find('.modal-title').text('Создание новой записи');
           modal.find('.modal-body').html('<form id="create-form">' +
-            '<div class="form-group">' + 
-            '<input type="text" class="form-control" placeholder="Логин">' +
+            '<div class="form-group">' +
+            '<select class="form-control" placeholder="Логин">' +
+              '<option>S'+login+'</option>' +
+              '<option>M'+login+'</option>' +
+              '<option>L'+login+'</option>' +
+              '<option>XL'+login+'</option>' +
+              '<option>T'+login+'</option>' +
+            '</select>' +
             '</div>' +
             '<div class="form-group">' +
-            '<input type="text" class="form-control" placeholder="Пароль">' +
+            '<input type="text" class="form-control" placeholder="Пароль" value="'+pass+'">' +
             '</div>' +
             '<div class="form-group">' +
             '<input type="text" class="form-control"placeholder="IP">' +                          
@@ -96,10 +118,10 @@ $(document).ready(function() {
 
 
           $('#btn-create').click(function (event) {
-            var login = $('#create-form').find('input')[0];
-            var password = $('#create-form').find('input')[1];
-            var ip = $('#create-form').find('input')[2];
-            var flag = $('#create-form').find('input')[3];
+            var login = $('#create-form').find('select')[0];
+            var password = $('#create-form').find('input')[0];
+            var ip = $('#create-form').find('input')[1];
+            var flag = $('#create-form').find('input')[2];
             var end_date = $(flag).prop("checked")? (new Date().getTime()) + (30 * 24 * 60 * 60 * 1000): null;
             var status = $(flag).prop("checked")? 2: 1;
 
@@ -124,13 +146,21 @@ $(document).ready(function() {
           }); 
         break;
         case 'edit':
+          oTT.fnSelectNone();
+          oTT.fnSelectAll(true);
 
         break;
         case 'delete':
           modal.find('.modal-title').text('Удаление');
-          if (aData.length > 0) {
+          if (aData.length === 1) {
             modal.find('.modal-body').html('Братюнь, ты выделил одну запись. Уверен что нужно ее удалить?');        
             modal.find('.modal-footer').html('<button type="button" class="btn btn-default" data-dismiss="modal">Не, чет я погорячился.</button><button id="btn-delete" type="button" class="btn btn-primary" data-id="' + aData[0]._id + '">Агась, удаляем к чертям!</button>');
+          } else if (aData.length > 1 && aData.length < 5) {
+            modal.find('.modal-body').html('Братюнь, ты выделил ' + aData.length + ' записи. Уверен что нужно их удалить?');        
+            modal.find('.modal-footer').html('<button type="button" class="btn btn-default" data-dismiss="modal">Не, чет я погорячился.</button><button id="btn-delete" type="button" class="btn btn-primary" data-id="' + aData[0]._id + '">Агась, удаляем все к чертям!</button>');
+          } else if (aData.length >= 5) {
+            modal.find('.modal-body').html('Братюнь, ты выделил ' + aData.length + ' записей. Уверен что нужно их удалить?');        
+            modal.find('.modal-footer').html('<button type="button" class="btn btn-default" data-dismiss="modal">Не, чет я погорячился.</button><button id="btn-delete" type="button" class="btn btn-primary" data-id="' + aData[0]._id + '">Агась, удаляем все к чертям!</button>');
           } else {
             modal.find('.modal-body').html('И что тут удалять? Ничего не выделено...');
             modal.find('.modal-footer').html('<button type="button" class="btn btn-default" data-dismiss="modal">Ясно, понятно.</button>');
@@ -150,7 +180,9 @@ $(document).ready(function() {
         break;
       }                 
     });
-
-    var oTT = TableTools.fnGetInstance('main_table');
-    $('#main_table_filter label input:text').addClass('form-control input-lg col-xs-6');
+    
+    $('#main_table_filter').addClass('form-group');
+    $('#main_table_filter').find('label').addClass('control-label');
+    $('#main_table_filter').find('input').addClass('form-control');
+    
   }); 
