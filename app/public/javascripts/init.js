@@ -10,7 +10,11 @@ $(document).ready(function() {
     var table = $('#main_table').DataTable({
       sDom: 'T<"clear ">lfrtip',
       paging: false,
+      bInfo: false,
       scrollY: 400,
+      language: {
+        zeroRecords: "Нет записей для отображения"
+      },
       columnDefs: [
         {
           "targets": [ 0 ],
@@ -75,6 +79,12 @@ $(document).ready(function() {
       oTT.fnSelectNone();
     });
 
+          //     oTT.fnSelectNone();
+          // oTT.fnSelectAll(true);
+$("#searchbox").on("keyup search input paste cut", function() {
+   table.search(this.value).draw();
+});  
+
     $('#myModal').on('hidden.bs.modal', function (event) {
       var modal = $(this);
       modal.find('.modal-title').text('');
@@ -90,10 +100,10 @@ $(document).ready(function() {
 
       switch (type) {
         case 'create':          
-          var modal = $(this);
           var login = getRndLogin();
           var pass = getRndPass();
           modal.find('.modal-title').text('Создание новой записи');
+          modal.find('.modal-error').text('');
           modal.find('.modal-body').html('<form id="create-form">' +
             '<div class="form-group">' +
             '<select class="form-control" placeholder="Логин">' +
@@ -118,6 +128,7 @@ $(document).ready(function() {
 
 
           $('#btn-create').click(function (event) {
+            modal.find('.modal-error').text('');
             var login = $('#create-form').find('select')[0];
             var password = $('#create-form').find('input')[0];
             var ip = $('#create-form').find('input')[1];
@@ -142,16 +153,17 @@ $(document).ready(function() {
             }).done(function() {
               modal.modal('hide');
               table.ajax.reload();
+            }).fail(function(jqXHR, textStatus, errorThrown) {
+              modal.find('.modal-error').text(textStatus);
             });
           }); 
         break;
         case 'edit':
-          oTT.fnSelectNone();
-          oTT.fnSelectAll(true);
 
         break;
         case 'delete':
           modal.find('.modal-title').text('Удаление');
+          modal.find('.modal-error').text('');
           if (aData.length === 1) {
             modal.find('.modal-body').html('Братюнь, ты выделил одну запись. Уверен что нужно ее удалить?');        
             modal.find('.modal-footer').html('<button type="button" class="btn btn-default" data-dismiss="modal">Не, чет я погорячился.</button><button id="btn-delete" type="button" class="btn btn-primary" data-id="' + aData[0]._id + '">Агась, удаляем к чертям!</button>');
@@ -166,6 +178,7 @@ $(document).ready(function() {
             modal.find('.modal-footer').html('<button type="button" class="btn btn-default" data-dismiss="modal">Ясно, понятно.</button>');
           }
           $('#btn-delete').click(function (event) {
+            modal.find('.modal-error').text('');
             var aData = oTT.fnGetSelectedData();
             var id = $(this).data("id");            
             modal.modal('hide');
@@ -175,6 +188,8 @@ $(document).ready(function() {
               data: {_id: id}
             }).done(function() {
               table.ajax.reload();
+            }).fail(function(jqXHR, textStatus, errorThrown) {
+              modal.find('.modal-error').text(textStatus);
             });
           });      
         break;

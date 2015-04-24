@@ -1,4 +1,4 @@
-.header-black {
+/*.header-black {
   background-color: #ddd;
   border-color: #ddd;
   border-radius: 4px;
@@ -22,4 +22,7 @@
   display: block;
   box-sizing: border-box;
   vertical-align: middle;
+}*/
+.dataTables_filter {
+   display: none;
 }

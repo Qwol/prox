@@ -11,15 +11,36 @@
 <script type="text/javascript" src="/javascripts/init.js"></script>
 
 <div class="container">
-  <div class="row">
-    <div class="col-xs-12 header-black">
-      <div class="btn-group" role="group" aria-label="...">
-        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#myModal" data-whatever="create">Добавить</button>
-        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#myModal" data-whatever="edit">Редактировать</button>
-        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#myModal" data-whatever="delete">Удалить</button>
+  <nav class="navbar navbar-default">
+    <div class="container-fluid">
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <div class="nav navbar-nav navbar-left">
+          <button type="button" class="btn btn-default navbar-btn" data-toggle="modal" data-target="#myModal" data-whatever="create">Добавить</button>
+          <button type="button" class="btn btn-default navbar-btn" data-toggle="modal" data-target="#myModal" data-whatever="edit">Редактировать</button>
+          <button type="button" class="btn btn-default navbar-btn" data-toggle="modal" data-target="#myModal" data-whatever="delete">Удалить</button>
+        </div>
+        <form class="navbar-form navbar-left" role="search">
+          <div class="form-group">
+            <input id="searchbox" type="text" class="form-control" placeholder="Search">
+          </div>        
+        </form>
+        <ul class="nav navbar-nav navbar-right">
+          <li id="fat-menu" class="dropdown">
+            <a id="drop3" href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" role="button" aria-expanded="false">
+              Инструменты
+              <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="drop3">
+              <li><a id="selectall" tabindex="-1">Выделить все</a></li>
+              <li><a id="unselectall" tabindex="-1">Убрать выделение</a></li>
+<!--                 <li role="presentation" class="divider"></li>
+              <li role="presentation"><a role="menuitem" tabindex="-1" href="https://twitter.com/fat">Separated link</a></li> -->
+            </ul>
+          </li>
+        </ul>
       </div>
-    </div>
-  </div>
+    </div><!-- /.container-fluid -->
+  </nav>
   <div class="row">
     <div class="col-xs-12 border-black">
       <table id="main_table" class="table table-striped table-hover table-condensed">
@@ -46,6 +67,7 @@
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title" id="myModalLabel"></h4>
       </div>
+      <div class="modal-error"></div>
       <div class="modal-body"></div>
       <div class="modal-footer"></div>
     </div>
