@@ -166,6 +166,80 @@ $(document).ready(function() {
         }); 
       break;
       case 'edit':
+        modal.find('.modal-title').text('Редактирование');
+        modal.find('.modal-error').text('');
+        if (aData.length === 1) {
+          modal.find('.modal-body').html('<form id="edit-form">' +
+          '<div class="form-group">' +
+          '<input type="text" class="form-control" placeholder="Логин" value="'+aData[0].login+'">' +
+          '</div>' +
+          '<div class="form-group">' +
+          '<input type="text" class="form-control" placeholder="Пароль" value="'+aData[0].password+'">' +
+          '</div>' +
+          '<div class="form-group">' +
+          '<input type="text" class="form-control" placeholder="IP" value="'+aData[0].ip+'">' +                          
+          '</div>' +
+          '<div class="row">' +
+          '<div class="col-xs-6">' +
+          '<div class="form-group">' +
+          '<select class="form-control" placeholder="Статус">' +
+            '<option value="0">истек</option>' +
+            '<option value="1">готов</option>' +
+            '<option value="2">актив</option>' +
+          '</select>' +  
+          '</div>' +
+          '</div>' +
+          '<div class="col-xs-6">' +
+          '<div class="form-group">' +
+          '<input type="date" class="form-control" placeholder="Дата" value="'+moment(aData[0].end_date).format("YYYY-MM-DD")+'">' +                          
+          '</div>' +
+          '</div>' +
+          '</div>'+
+          '</form>');     
+          modal.find('.modal-body select option').filter(function() {
+            //may want to use $.trim in here
+            return $(this).val() == aData[0].status; 
+          }).prop('selected', true);   
+          modal.find('.modal-footer').html('<button type="button" class="btn btn-default" data-dismiss="modal">Не, чет я погорячился.</button><button id="btn-edit" type="button" class="btn btn-primary" data-id="' + aData[0]._id + '">Меняем, я уверен!</button>');
+          
+          $('#btn-edit').click(function (event) {
+          modal.find('.modal-error').text('');
+          var id = $(this).data("id");
+          var login = $('#edit-form').find('input')[0];
+          var password = $('#edit-form').find('input')[1];
+          var ip = $('#edit-form').find('input')[2];
+          var status = $('#edit-form select option:selected');
+          var end_date = $('#edit-form').find('input')[3];
+
+          var data = {
+            _id: id,
+            login: $(login).val(),
+            password: $(password).val(),
+            ip: $(ip).val(),
+            status: $(status).val(),
+            end_date: moment($(end_date).val()).valueOf()
+          };
+
+          console.log(data);
+          
+          $.ajax({
+            url: "/rows",
+            method: "PUT",
+            data: data
+          }).done(function() {
+            modal.modal('hide');
+            table.ajax.reload();
+          }).fail(function(jqXHR, textStatus, errorThrown) {
+            modal.find('.modal-error').text(textStatus);
+          });
+        });           
+        } else if (aData.length > 1) {
+
+          modal.find('.modal-footer').html('<button type="button" class="btn btn-default" data-dismiss="modal">Не, чет я погорячился.</button><button id="btn-edit" type="button" class="btn btn-primary" data-id="' + aData[0]._id + '">Да-да, именно так!</button>');
+        } else {
+          modal.find('.modal-body').html('Нечего редактировать. Ничего не выделено...');
+          modal.find('.modal-footer').html('<button type="button" class="btn btn-default" data-dismiss="modal">Ясно, понятно.</button>');
+        }
 
       break;
       case 'delete':
@@ -186,7 +260,7 @@ $(document).ready(function() {
         }
         $('#btn-delete').click(function (event) {
           modal.find('.modal-error').text('');
-          var aData = oTT.fnGetSelectedData();
+          // var aData = oTT.fnGetSelectedData();
           var id = $(this).data("id");            
           modal.modal('hide');
           $.ajax({
