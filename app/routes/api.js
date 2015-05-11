@@ -15,7 +15,8 @@ router.post('/rows', function(req, res, next) {
     console.log(saved_data);
     if (err) next(err);
     else {
-      res.send(saved_data);
+      console.log(saved_data);
+      res.status(200).end();
     }
   });
 });
@@ -26,7 +27,8 @@ router.put('/rows', function(req, res, next) {
     console.log(err);
     if (err) next(err);
     else {
-      res.send(saved_data);
+      console.log(saved_data);
+      res.status(200).end();
     }
   });
 });
@@ -38,7 +40,8 @@ router.delete('/rows', function(req, res, next) {
     console.log(answer);
     if (err) next(err);
     else {
-      res.send(answer);
+      console.log(saved_data);
+      res.status(200).end();
     }
   });
 });

@@ -59,7 +59,7 @@ $(document).ready(function() {
           // If display or filter data is requested, format the date
           if ( type === 'display' || type === 'filter' ) {
               var d = moment(data);
-              return d.format("DD.MM.YYYY (HH:mm)");
+              return d.format("DD.MM.YYYY");
           }
           return data;
         }
@@ -203,44 +203,102 @@ $(document).ready(function() {
           modal.find('.modal-footer').html('<button type="button" class="btn btn-default" data-dismiss="modal">Не, чет я погорячился.</button><button id="btn-edit" type="button" class="btn btn-primary" data-id="' + aData[0]._id + '">Меняем, я уверен!</button>');
           
           $('#btn-edit').click(function (event) {
-          modal.find('.modal-error').text('');
-          var id = $(this).data("id");
-          var login = $('#edit-form').find('input')[0];
-          var password = $('#edit-form').find('input')[1];
-          var ip = $('#edit-form').find('input')[2];
-          var status = $('#edit-form select option:selected');
-          var end_date = $('#edit-form').find('input')[3];
+            modal.find('.modal-error').text('');
+            var id = $(this).data("id");
+            var login = $('#edit-form').find('input')[0];
+            var password = $('#edit-form').find('input')[1];
+            var ip = $('#edit-form').find('input')[2];
+            var status = $('#edit-form select option:selected');
+            var end_date = $('#edit-form').find('input')[3];
 
-          var data = {
-            _id: id,
-            login: $(login).val(),
-            password: $(password).val(),
-            ip: $(ip).val(),
-            status: $(status).val(),
-            end_date: moment($(end_date).val()).valueOf()
-          };
+            var data = {
+              _id: id,
+              login: $(login).val(),
+              password: $(password).val(),
+              ip: $(ip).val(),
+              status: $(status).val(),
+              end_date: $(end_date).val()? moment($(end_date).val()).valueOf(): null
+            };
 
-          console.log(data);
-          
-          $.ajax({
-            url: "/rows",
-            method: "PUT",
-            data: data
-          }).done(function() {
-            modal.modal('hide');
-            table.ajax.reload();
-          }).fail(function(jqXHR, textStatus, errorThrown) {
-            modal.find('.modal-error').text(textStatus);
-          });
-        });           
+            console.log(data);
+            
+            $.ajax({
+              url: "/rows",
+              method: "PUT",
+              data: data
+            }).done(function() {
+              modal.modal('hide');
+              table.ajax.reload();
+            }).fail(function(jqXHR, textStatus, errorThrown) {
+              modal.find('.modal-error').text(textStatus);
+            });
+          });           
         } else if (aData.length > 1) {
+          var idArray = [];
+          for (i=0; i < aData.length; i++) {
+            idArray.push(aData[i]._id);
+          }
+          modal.find('.modal-body').html('<form id="edit-form">' +
+          '<div class="row">' +
+          '<div class="col-xs-6">' +
+          '<div class="form-group">' +
+          '<select class="form-control" placeholder="Статус">' +
+            '<option value=""></option>' +
+            '<option value="0">истек</option>' +
+            '<option value="1">готов</option>' +
+            '<option value="2">актив</option>' +
+          '</select>' +  
+          '</div>' +
+          '</div>' +
+          '<div class="col-xs-6">' +
+          '<div class="form-group">' +
+          '<input type="date" disabled class="form-control" placeholder="Дата" value="'+moment(aData[0].end_date).format("YYYY-MM-DD")+'">' +                          
+          '</div>' +
+          '</div>' +
+          '</div>'+
+          '</form>');       
+          modal.find('.modal-footer').html('<button type="button" class="btn btn-default" data-dismiss="modal">Не, чет я погорячился.</button><button id="btn-edit" type="button" class="btn btn-primary">Меняем, я уверен!</button>');
 
-          modal.find('.modal-footer').html('<button type="button" class="btn btn-default" data-dismiss="modal">Не, чет я погорячился.</button><button id="btn-edit" type="button" class="btn btn-primary" data-id="' + aData[0]._id + '">Да-да, именно так!</button>');
+          modal.find('.modal-body select').change(function () {
+            $( ".modal-body select option:selected" ).each(function() {
+              console.log($( this ).val());
+              if ($( this ).val() == 2) {
+                $( "input[type='date']" ).prop('disabled', false);
+              } else {
+                $( "input[type='date']" ).prop('disabled', true).val(moment(null));
+
+              }
+            });
+          });
+
+          $('#btn-edit').click(function (event) {
+            modal.find('.modal-error').text('');
+            var status = $('#edit-form select option:selected');
+            var end_date = $('#edit-form').find("input[type='date']");
+
+            var data = {
+              _id: idArray,
+              status: $(status).val()? $(status).val(): undefined,
+              end_date: $(end_date).val()? moment($(end_date).val()).valueOf(): null
+            };
+
+            console.log(data);
+            
+            $.ajax({
+              url: "/rows",
+              method: "PUT",
+              data: data
+            }).done(function() {
+              modal.modal('hide');
+              table.ajax.reload();
+            }).fail(function(jqXHR, textStatus, errorThrown) {
+              modal.find('.modal-error').text(textStatus);
+            });
+          });        
         } else {
           modal.find('.modal-body').html('Нечего редактировать. Ничего не выделено...');
           modal.find('.modal-footer').html('<button type="button" class="btn btn-default" data-dismiss="modal">Ясно, понятно.</button>');
         }
-
       break;
       case 'delete':
         modal.find('.modal-title').text('Удаление');

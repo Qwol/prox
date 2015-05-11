@@ -6,7 +6,7 @@ module.exports = function (new_row, callback) {
               // ip: $(ip).val(),
               // status: status,
               // end_date: end_
-  var regex = new RegExp('^\\w+'+myStr+'\\w+$','i');
+  // var regex = new RegExp('^\\w+'+myStr+'\\w+$','i');
   if (new_row && new_row.login) {
     row(function (err, model) {
       if (err) callback(err);
