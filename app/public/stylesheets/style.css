@@ -26,3 +26,7 @@
 .dataTables_filter {
    display: none;
 }
+
+.addon-fixed-width {
+  width: 10em;
+}

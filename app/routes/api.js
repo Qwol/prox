@@ -7,7 +7,9 @@ var write_file = require('../utils/write-file');
 var switch_on = require('../utils/switch-on');
 var switch_off = require('../utils/switch-off');
 var show_rows = require('../utils/show-rows');
+var show_ips = require('../utils/show-ips');
 var moment = require('moment');
+
 
 //add new row
 router.post('/rows', function(req, res, next) {
@@ -56,15 +58,7 @@ router.delete('/rows', function(req, res, next) {
 //   });
 // });
 
-//show all rows
-router.get('/rows', function(req, res, next) {
-  show_rows(function (err, rows) {
-    if (err) next(err);
-    else {
-      res.send(rows);
-    }
-  });
-});
+
 
 // //switch on inactive rows
 // router.post('/rows/switchon', function(req, res, next) {
@@ -100,16 +94,29 @@ router.get('/rows', function(req, res, next) {
 //   });
 // });
 
+
+//init
 router.get('/', function(req, res) {
-  show_rows(function (err, rows) {
-    if (err) next(err);
-    else {
-      res.render('pages/index', {
-        rows: rows
-      });
-    }
-  });
-        
+  res.render('pages/index');       
 });
 
+//show all rows
+router.get('/rows', function(req, res, next) {  
+  show_rows(req.query.all,function (err, rows) {
+    if (err) next(err);
+    else {
+      res.send(rows);
+    }
+  });
+});
+
+//show free ips
+router.get('/freeip', function(req, res, next) {  
+  show_ips(req.query.all,function (err, rows) {
+    if (err) next(err);
+    else {
+      res.send(rows);
+    }
+  });
+});
 module.exports = router;

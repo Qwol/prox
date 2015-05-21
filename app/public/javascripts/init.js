@@ -15,36 +15,38 @@ $(document).ready(function() {
     language: {
       zeroRecords: "Нет записей для отображения"
     },
-    columnDefs: [
-      {
-        "targets": [ 0 ],
-        "visible": false,
-        "searchable": false
-      }
-    ],
+    // columnDefs: [
+    //   {
+    //     "targets": [ 0 ],
+    //     "visible": false,
+    //     "searchable": false
+    //   }
+    // ],
     ajax: {
       url: "/rows",              
       type: "GET",
       dataSrc: ""
     },
     columns: [
-      { data: '_id' },
       { data: 'login' },
       { data: 'password' },
-      { data: 'ip' },
+      { data: '_id' },
       { data: 'status',
         render: function ( data, type, row ) {
           // If display or filter data is requested, format the status
           switch (data) {
             case 0:
-              return "<span class='text-danger'>истек</span>";
+              return "<span class='text-danger'>запас</span>";
               break;
             case 1:
               return "<span class='text-success'>готов</span>";
               break;                
             case 2:
               return "<span class='text-primary'>актив</span>";
-              break;                
+              break;  
+            case 3:
+              return "<span class='text-danger'>истек</span>";
+              break;               
           }
           if ( type === 'display' || type === 'filter' ) {
               var d = moment(data);
@@ -58,8 +60,8 @@ $(document).ready(function() {
         render: function ( data, type, row ) {
           // If display or filter data is requested, format the date
           if ( type === 'display' || type === 'filter' ) {
-              var d = moment(data);
-              return d.format("DD.MM.YYYY");
+              var d = data? moment(data).format("DD.MM.YYYY"): null;
+              return d;
           }
           return data;
         }
@@ -88,6 +90,17 @@ $(document).ready(function() {
     oTT.fnSelectNone();
   });
 
+  $('#showall').click(function (event) {
+    var chb = $(this).find('input');   
+    if ($(chb).prop("checked")) {
+      table.ajax.url("/rows").load();
+      $(chb).prop("checked", false);
+    } else {
+      table.ajax.url("/rows?all=true").load();
+      $(chb).prop("checked", true);
+    }    
+  });
+
   $("#searchbox").on("keyup search input paste cut", function() {
      table.search(this.value).draw();
   });  
@@ -109,23 +122,40 @@ $(document).ready(function() {
       case 'create':          
         var login = getRndLogin();
         var pass = getRndPass();
+        var type = 'a';
         modal.find('.modal-title').text('Создание новой записи');
         modal.find('.modal-error').text('');
         modal.find('.modal-body').html('<form id="create-form">' +
           '<div class="form-group">' +
-          '<select class="form-control" placeholder="Логин">' +
-            '<option>S'+login+'</option>' +
-            '<option>M'+login+'</option>' +
-            '<option>L'+login+'</option>' +
-            '<option>XL'+login+'</option>' +
-            '<option>T'+login+'</option>' +
-          '</select>' +
+          '<label for="exampleInputName2">Логин</label>'+
+          '<input type="text" class="form-control auth-data" placeholder="Логин">' +
           '</div>' +
           '<div class="form-group">' +
-          '<input type="text" class="form-control" placeholder="Пароль" value="'+pass+'">' +
+          '<label for="exampleInputName2">Пароль</label>'+
+          '<input type="text" class="form-control auth-data" placeholder="Пароль">' +
           '</div>' +
-          '<div class="form-group">' +
-          '<input type="text" class="form-control"placeholder="IP">' +                          
+          '<label for="exampleInputName2">Тип</label>'+
+          '<div class="row">' +
+          
+          '<div class="col-lg-6">' +
+          '<div class="form-group">' +          
+          '<select class="form-control user-type" placeholder="IP">' +
+            '<option value="a">ADMIN USERS</option>' +
+            '<option value="s">PROXY USERS S</option>' +
+            '<option value="m">PROXY USERS M</option>' +
+            '<option value="l">PROXY USERS L</option>' +
+            '<option value="xl">PROXY USERS XL</option>' +
+            '<option value="t">TEST USERS</option>' +
+          '</select>' +    
+          '</div>' +
+          '</div>' +
+          '<div class="col-lg-6">' +
+          '<div class="form-group">' + 
+          '<select class="form-control user-ip" placeholder="IP">' +
+            '<option value="">Создать новый IP</option>' +
+          '</select>' +                     
+          '</div>' +
+          '</div>' +
           '</div>' +
           '<div class="checkbox">' +
           '<label><input type="checkbox"> Включить на месяц</label>' +
@@ -133,6 +163,30 @@ $(document).ready(function() {
           '</form>');        
         modal.find('.modal-footer').html('<button type="button" class="btn btn-default" data-dismiss="modal">Чет я пеедумал, отбой.</button><button id="btn-create" type="button" class="btn btn-primary">Добавляем запись!</button>');
 
+        modal.find('.user-type').change(function (event) {
+          var select = $(this);
+          type = $(event.target).find('option:selected').first().val();
+          console.log(type);
+          if (type !== 'a') {
+            var arr = modal.find('.auth-data').prop('disabled', true);
+            $(arr[0]).val(type + login);
+            $(arr[1]).val(pass);
+          } else modal.find('.auth-data').val('').prop('disabled', false);
+
+          $.ajax({
+            url: "/freeip?type="+type,
+            method: "GET",
+          }).done(function (data) {           
+            var auxArr = ['<option value="">Создать новый IP</option>'];
+            $.each(data, function(i, option)
+            {
+                auxArr[i+1] = '<option value="' + option._id + '">' + option._id + '</option>';
+            });
+            modal.find('.user-ip').append(auxArr.join(''));
+          }).fail(function(jqXHR, textStatus, errorThrown) {
+            modal.find('.modal-error').text(textStatus);
+          });
+        });
 
         $('#btn-create').click(function (event) {
           modal.find('.modal-error').text('');
@@ -183,9 +237,10 @@ $(document).ready(function() {
           '<div class="col-xs-6">' +
           '<div class="form-group">' +
           '<select class="form-control" placeholder="Статус">' +
-            '<option value="0">истек</option>' +
+            '<option value="0">запас</option>' +
             '<option value="1">готов</option>' +
             '<option value="2">актив</option>' +
+            '<option value="3">истек</option>' +            
           '</select>' +  
           '</div>' +
           '</div>' +
@@ -244,9 +299,10 @@ $(document).ready(function() {
           '<div class="form-group">' +
           '<select class="form-control" placeholder="Статус">' +
             '<option value=""></option>' +
-            '<option value="0">истек</option>' +
+            '<option value="0">запас</option>' +
             '<option value="1">готов</option>' +
             '<option value="2">актив</option>' +
+            '<option value="3">истек</option>' +            
           '</select>' +  
           '</div>' +
           '</div>' +

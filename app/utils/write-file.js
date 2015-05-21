@@ -3,7 +3,7 @@ var row = require('../models/user');
 var config = require('../config/app-config.js')
 
 module.exports = function (callback) {
-  if (config.file_path) {
+  if (config.secrets_path) {
     row(function (err, model) {
       if (err) callback(err);
       else {
@@ -18,7 +18,7 @@ module.exports = function (callback) {
               str += item.ip + '\n';
             });
             try {
-              fs.writeFileSync(config.file_path, str);
+              fs.writeFileSync(config.secrets_path, str);
             } catch (ex) {
               callback(ex);
               return undefined;

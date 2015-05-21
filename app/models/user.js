@@ -2,9 +2,10 @@ var mongoose = require('mongoose');
 var connection   = require('../config/db-connection.js').db_users;
 
 var userSchema = mongoose.Schema({
+  _id: String,
   login: String,
   password: String,
-  ip: String,
+  type: String,
   status: Number,
   end_date: Date
 });
