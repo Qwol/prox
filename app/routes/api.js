@@ -10,19 +10,6 @@ var show_rows = require('../utils/show-rows');
 var show_ips = require('../utils/show-ips');
 var moment = require('moment');
 
-
-//add new row
-router.post('/rows', function(req, res, next) {
-  add_row(req.body, function (err, saved_data) {
-    console.log(saved_data);
-    if (err) next(err);
-    else {
-      console.log(saved_data);
-      res.status(200).end();
-    }
-  });
-});
-
 //edit one row
 router.put('/rows', function(req, res, next) {
   edit_row(req.body, function (err, saved_data) {
@@ -112,10 +99,21 @@ router.get('/rows', function(req, res, next) {
 
 //show free ips
 router.get('/freeip', function(req, res, next) {  
-  show_ips(req.query.all,function (err, rows) {
+  show_ips(req.query.type,function (err, rows) {
     if (err) next(err);
     else {
       res.send(rows);
+    }
+  });
+});
+
+//add new row
+router.post('/rows', function(req, res, next) {
+  add_row(req.body, function (err, saved_data) {
+    if (err) next(err);
+    else {
+      console.log(saved_data);
+      res.status(200).end();
     }
   });
 });

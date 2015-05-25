@@ -115,108 +115,141 @@ $(document).ready(function() {
   $('#myModal').on('show.bs.modal', function (event) {
     var aData = oTT.fnGetSelectedData();
     var button = $(event.relatedTarget); // Button that triggered the modal
-    var type = button.data('whatever'); // Extract info from data-* attributes
+    var modalType = button.data('whatever'); // Extract info from data-* attributes
     var modal = $(this);
 
-    switch (type) {
+    switch (modalType) {
       case 'create':          
         var login = getRndLogin();
         var pass = getRndPass();
-        var type = 'a';
+        var type = '';
         modal.find('.modal-title').text('Создание новой записи');
         modal.find('.modal-error').text('');
-        modal.find('.modal-body').html('<form id="create-form">' +
-          '<div class="form-group">' +
-          '<label for="exampleInputName2">Логин</label>'+
-          '<input type="text" class="form-control auth-data" placeholder="Логин">' +
-          '</div>' +
-          '<div class="form-group">' +
-          '<label for="exampleInputName2">Пароль</label>'+
-          '<input type="text" class="form-control auth-data" placeholder="Пароль">' +
-          '</div>' +
-          '<label for="exampleInputName2">Тип</label>'+
+        modal.find('.modal-body').html('<form class="form-horizontal" id="create-form">' +
           '<div class="row">' +
-          
-          '<div class="col-lg-6">' +
-          '<div class="form-group">' +          
-          '<select class="form-control user-type" placeholder="IP">' +
-            '<option value="a">ADMIN USERS</option>' +
-            '<option value="s">PROXY USERS S</option>' +
-            '<option value="m">PROXY USERS M</option>' +
-            '<option value="l">PROXY USERS L</option>' +
-            '<option value="xl">PROXY USERS XL</option>' +
-            '<option value="t">TEST USERS</option>' +
-          '</select>' +    
+            '<div class="form-group">' +
+              '<label class="col-sm-2 control-label">Логин</label>'+
+              '<div class="col-sm-8">' +
+                '<input type="text" class="form-control auth-data" placeholder="Логин" disabled>' +
+              '</div>' +
+              '<div class="col-sm-2">' +
+                '<a href="#"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></a>' +
+              '</div>' +
+            '</div>' +
+            '<div class="form-group">' +
+              '<label class="col-sm-2 control-label">Пароль</label>'+
+              '<div class="col-sm-8">' +
+                '<input type="text" class="form-control auth-data" placeholder="Пароль" disabled>' +
+              '</div>' +
+              '<div class="col-sm-2">' +
+                '<a href="#"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></a>' +
+              '</div>' +
+            '</div>' +
+            '<div class="form-group">' +
+              '<label class="col-sm-2 control-label">Тип</label>'+ 
+              '<div class="col-sm-4">' +             
+                '<select class="form-control user-type">' +
+                  '<option value="">Выберите тип</option>' +
+                  '<option value="a">ADMIN USERS</option>' +
+                  '<option value="s">PROXY USERS S</option>' +
+                  '<option value="m">PROXY USERS M</option>' +
+                  '<option value="l">PROXY USERS L</option>' +
+                  '<option value="xl">PROXY USERS XL</option>' +
+                  '<option value="t">TEST USERS</option>' +
+                '</select>' +    
+              '</div>' +
+              '<div class="col-sm-4">' + 
+                '<input type="ip" class="form-control" disabled placeholder="IP">' +
+              '</div>' +
+              '<div class="col-sm-2">' +
+              '</div>' +
+            '</div>' +
           '</div>' +
-          '</div>' +
-          '<div class="col-lg-6">' +
-          '<div class="form-group">' + 
-          '<select class="form-control user-ip" placeholder="IP">' +
-            '<option value="">Создать новый IP</option>' +
-          '</select>' +                     
-          '</div>' +
-          '</div>' +
-          '</div>' +
-          '<div class="checkbox">' +
-          '<label><input type="checkbox"> Включить на месяц</label>' +
-          '</div>' +
-          '</form>');        
-        modal.find('.modal-footer').html('<button type="button" class="btn btn-default" data-dismiss="modal">Чет я пеедумал, отбой.</button><button id="btn-create" type="button" class="btn btn-primary">Добавляем запись!</button>');
+        '</form>');        
+        modal.find('.modal-footer').html('<button type="button" class="btn btn-default" data-dismiss="modal">Чет я передумал, отбой.</button><button id="btn-create" type="button" class="btn btn-primary">Добавляем запись!</button>');
+        modal.find('input').change(function (event) {
+          modal.find('.modal-error').html('');
+        });
+        modal.find(".col-sm-2 a").click(function (e) {
+          if (type) {
+            var currentInput = $(e.target.closest('.form-group')).find("input").first();
+            if ($(currentInput).prop("placeholder") === "Логин") {
+              login = getRndLogin();
+              $(currentInput).val(type + login).change();
+            } else if ($(currentInput).prop("placeholder") === "Пароль") {
+              pass = getRndPass();
+              $(currentInput).val(pass).change();
+            }        
+          }
+        });
 
         modal.find('.user-type').change(function (event) {
+          modal.find('.modal-error').html('');
           var select = $(this);
           type = $(event.target).find('option:selected').first().val();
-          console.log(type);
-          if (type !== 'a') {
-            var arr = modal.find('.auth-data').prop('disabled', true);
-            $(arr[0]).val(type + login);
-            $(arr[1]).val(pass);
-          } else modal.find('.auth-data').val('').prop('disabled', false);
+          if (type) {
+            if (type !== 'a') {
+              var arr = modal.find('.auth-data').prop('disabled', true);
+              $(arr[0]).val(type + login);
+              $(arr[1]).val(pass);
+            } else modal.find('.auth-data').val('').prop('disabled', false);
 
-          $.ajax({
-            url: "/freeip?type="+type,
-            method: "GET",
-          }).done(function (data) {           
-            var auxArr = ['<option value="">Создать новый IP</option>'];
-            $.each(data, function(i, option)
-            {
-                auxArr[i+1] = '<option value="' + option._id + '">' + option._id + '</option>';
+            $.ajax({
+              url: "/freeip?type="+type,
+              method: "GET",
+            }).done(function (data) {           
+              if (data._id) {
+                modal.find('input[placeholder="IP"]').val(data._id).prop("disabled", true);
+              } else {
+                modal.find('input[placeholder="IP"]').val('').prop("disabled", false);
+              }
+            }).fail(function(jqXHR, textStatus, errorThrown) {
+              modal.find('.modal-error').html('<div class="alert alert-danger" role="alert">' +
+              '<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>' +
+              '<span class="sr-only">Error:</span>' + errorThrown + '</div>');
             });
-            modal.find('.user-ip').append(auxArr.join(''));
-          }).fail(function(jqXHR, textStatus, errorThrown) {
-            modal.find('.modal-error').text(textStatus);
-          });
+          } else {
+            modal.find('.auth-data').val('').prop('disabled', true);
+            modal.find('input[placeholder="IP"]').val('');
+          }
         });
 
         $('#btn-create').click(function (event) {
-          modal.find('.modal-error').text('');
-          var login = $('#create-form').find('select')[0];
-          var password = $('#create-form').find('input')[0];
-          var ip = $('#create-form').find('input')[1];
-          var flag = $('#create-form').find('input')[2];
-          var end_date = $(flag).prop("checked")? (new Date().getTime()) + (30 * 24 * 60 * 60 * 1000): null;
-          var status = $(flag).prop("checked")? 2: 1;
-
-          var data = {
-            login: $(login).val(),
-            password: $(password).val(),
-            ip: $(ip).val(),
-            status: status,
-            end_date: end_date
-          };
-
-          console.log(data);
+          var login = modal.find('input[placeholder="Логин"]').first().val();
+          var password = modal.find('input[placeholder="Пароль"]').first().val();
+          var ip = modal.find('input[placeholder="IP"]').first().val();   
+          var exist = modal.find('input[placeholder="IP"]').first().prop("disabled");
           
-          $.ajax({
-            url: "/rows",
-            method: "POST",
-            data: data
-          }).done(function() {
-            modal.modal('hide');
-            table.ajax.reload();
-          }).fail(function(jqXHR, textStatus, errorThrown) {
-            modal.find('.modal-error').text(textStatus);
-          });
+          if (type && login && password && ip) {
+            modal.find('.modal-error').html('');
+
+            var data = {
+              login: login,
+              password: password,
+              ip: ip,
+              type: type,
+              exist: exist
+            };
+
+            console.log(data);
+            
+            $.ajax({
+              url: "/rows",
+              method: "POST",
+              data: data
+            }).done(function() {
+              modal.modal('hide');
+              table.ajax.reload();
+            }).fail(function(jqXHR, textStatus, errorThrown) {
+              modal.find('.modal-error').html('<div class="alert alert-danger" role="alert">' +
+                '<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>' +
+                '<span class="sr-only">Error:</span>' + errorThrown + '</div>');
+            });
+          } else {
+              modal.find('.modal-error').html('<div class="alert alert-danger" role="alert">' +
+                '<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>' +
+                '<span class="sr-only">Error:</span>Все поля должны быть заполнены</div>');
+          }
         }); 
       break;
       case 'edit':
