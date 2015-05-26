@@ -9,24 +9,48 @@ function validation (data) {
   //   exist: exist
   // };
   var type = data.type;
+  var login = data.login;
+  var password = data.password;
+  var ip = data.ip;
+
   if (!type) return "Тип записи не указан!";
   if (!(/\d{10}/).test(login.substr(-10, 10))) return "Некорректный логин!";  
-  if (!(/[a-z0-9_]{10}/).test(password)) return "Некорректный пароль!";
-  if (!(/[a-z0-9_]{10}/).test(password)) return "Некорректный пароль!";   
-  if (login.substr(0, str.length - 10) !== type) return "IP адрес не соответствует выбранному типу учетной записи!";
+  if (!(/[a-z0-9]{10}/).test(password)) return "Некорректный пароль!";
+  if (!(/\d{0,3}\.\d{0,3}\.\d{0,3}\.\d{0,3}/).test(ip)) return "Некорректный IP!";   
+  if (login.substr(0, login.length - 10) !== type) return "Логин не соответствует выбранному типу учетной записи!";
 }
 
-module.exports = function (new_row, callback) {
-
-  // var regex = new RegExp('^\\w+'+myStr+'\\w+$','i');
-  if (new_row && new_row.login) {
+module.exports = function (data, callback) {
+  var valid = validation(data);
+  var exist =  JSON.parse(data.exist);
+  if (valid) callback(new Error(valid));
+  else {
     row(function (err, model) {
       if (err) callback(err);
       else {
-        model.create(new_row, function (err, saved_row) {
-          if (err) callback(err);
-          else callback(null, saved_row);
-        });
+        if (exist) {
+          model.update({_id: data.ip}, {
+            login: data.login,
+            password: data.password,
+            status: 1,
+            end_date: null
+          }, function (err, saved_row) {
+            if (err) callback(err);
+            else callback(null, saved_row);
+          });
+        } else {
+          model.create({      
+            _id: data.ip,
+            login: data.login,
+            password: data.password,
+            type: data.type,
+            status: 1,
+            end_date: null
+          }, function (err, saved_doc) {
+            if (err) callback(err);
+            else callback(null, saved_doc);
+          });
+        }
       }
     });
   }

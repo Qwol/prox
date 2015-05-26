@@ -31,6 +31,7 @@ $(document).ready(function() {
       { data: 'login' },
       { data: 'password' },
       { data: '_id' },
+      { data: 'type' },
       { data: 'status',
         render: function ( data, type, row ) {
           // If display or filter data is requested, format the status
@@ -81,6 +82,10 @@ $(document).ready(function() {
     oTT.fnSelectNone();
   });
 
+  $('body').click(function (e) {
+    if ($(e.target).prop("tagName") === 'BODY') oTT.fnSelectNone();
+  });
+
   $('#selectall').click(function (event) {
     oTT.fnSelectNone();
     oTT.fnSelectAll(true);
@@ -124,7 +129,7 @@ $(document).ready(function() {
         var pass = getRndPass();
         var type = '';
         modal.find('.modal-title').text('Создание новой записи');
-        modal.find('.modal-error').text('');
+        modal.find('.modal-error').html('');
         modal.find('.modal-body').html('<form class="form-horizontal" id="create-form">' +
           '<div class="row">' +
             '<div class="form-group">' +
@@ -167,9 +172,19 @@ $(document).ready(function() {
           '</div>' +
         '</form>');        
         modal.find('.modal-footer').html('<button type="button" class="btn btn-default" data-dismiss="modal">Чет я передумал, отбой.</button><button id="btn-create" type="button" class="btn btn-primary">Добавляем запись!</button>');
+
+        if (aData.length === 1 && aData[0].status === 0) {
+          type = aData[0].type;
+          modal.find('.user-type option[value="' + type + '"]').prop('selected', true);
+          modal.find('input[placeholder="IP"]').val(aData[0]._id).prop("disabled", true);
+          modal.find('input[placeholder="Логин"]').val(type + login).change();
+          modal.find('input[placeholder="Пароль"]').val(pass).change();
+        }
+
         modal.find('input').change(function (event) {
           modal.find('.modal-error').html('');
         });
+
         modal.find(".col-sm-2 a").click(function (e) {
           if (type) {
             var currentInput = $(e.target.closest('.form-group')).find("input").first();
@@ -230,8 +245,6 @@ $(document).ready(function() {
               type: type,
               exist: exist
             };
-
-            console.log(data);
             
             $.ajax({
               url: "/rows",
@@ -243,7 +256,7 @@ $(document).ready(function() {
             }).fail(function(jqXHR, textStatus, errorThrown) {
               modal.find('.modal-error').html('<div class="alert alert-danger" role="alert">' +
                 '<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>' +
-                '<span class="sr-only">Error:</span>' + errorThrown + '</div>');
+                '<span class="sr-only">Error:</span>' + jqXHR.responseText + '</div>');
             });
           } else {
               modal.find('.modal-error').html('<div class="alert alert-danger" role="alert">' +
@@ -252,44 +265,89 @@ $(document).ready(function() {
           }
         }); 
       break;
-      case 'edit':
-        modal.find('.modal-title').text('Редактирование');
-        modal.find('.modal-error').text('');
+      case 'edit':                
+        modal.find('.modal-error').html('');
+        var type;
+        var status;
+        var date;
         if (aData.length === 1) {
-          modal.find('.modal-body').html('<form id="edit-form">' +
-          '<div class="form-group">' +
-          '<input type="text" class="form-control" placeholder="Логин" value="'+aData[0].login+'">' +
-          '</div>' +
-          '<div class="form-group">' +
-          '<input type="text" class="form-control" placeholder="Пароль" value="'+aData[0].password+'">' +
-          '</div>' +
-          '<div class="form-group">' +
-          '<input type="text" class="form-control" placeholder="IP" value="'+aData[0].ip+'">' +                          
-          '</div>' +
-          '<div class="row">' +
-          '<div class="col-xs-6">' +
-          '<div class="form-group">' +
-          '<select class="form-control" placeholder="Статус">' +
-            '<option value="0">запас</option>' +
-            '<option value="1">готов</option>' +
-            '<option value="2">актив</option>' +
-            '<option value="3">истек</option>' +            
-          '</select>' +  
-          '</div>' +
-          '</div>' +
-          '<div class="col-xs-6">' +
-          '<div class="form-group">' +
-          '<input type="date" class="form-control" placeholder="Дата" value="'+moment(aData[0].end_date).format("YYYY-MM-DD")+'">' +                          
-          '</div>' +
-          '</div>' +
-          '</div>'+
-          '</form>');     
-          modal.find('.modal-body select option').filter(function() {
-            //may want to use $.trim in here
-            return $(this).val() == aData[0].status; 
-          }).prop('selected', true);   
+          var login = '';
+          var pass = '';
+          type = aData[0].type;
+          status = aData[0].status;
+          date = aData[0].end_date;
+          var disStatAuth = (type === 'a')? '': 'disabled';
+          var disStatDate = (status === 2)? '': 'disabled';
+          modal.find('.modal-title').text('Редактирование: ' + aData[0]._id + ' / "' + type + '"');
+          modal.find('.modal-body').html('<form class="form-horizontal" id="edit-form">' +
+            '<div class="row">' +
+              '<div class="form-group">' +
+                '<label class="col-sm-2 control-label">Логин</label>'+
+                '<div class="col-sm-8">' +
+                  '<input type="text" class="form-control auth-data" placeholder="Логин" ' + disStatAuth + '>' +
+                '</div>' +
+                '<div class="col-sm-2">' +
+                  '<a href="#"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></a>' +
+                '</div>' +
+              '</div>' +
+              '<div class="form-group">' +
+                '<label class="col-sm-2 control-label">Пароль</label>'+
+                '<div class="col-sm-8">' +
+                  '<input type="text" class="form-control auth-data" placeholder="Пароль" ' + disStatAuth + '>' +
+                '</div>' +
+                '<div class="col-sm-2">' +
+                  '<a href="#"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></a>' +
+                '</div>' +
+              '</div>' +
+              '<div class="form-group">' +
+                '<label class="col-sm-2 control-label">Тип</label>'+ 
+                '<div class="col-sm-4">' + 
+                  '<select class="form-control" placeholder="Статус">' +
+                    '<option value="0">запас</option>' +
+                    '<option value="1">готов</option>' +
+                    '<option value="2">актив</option>' +
+                    '<option value="3">истек</option>' +            
+                  '</select>' +   
+                '</div>' +
+                '<div class="col-sm-4">' +    
+                  '<input type="date" class="form-control" placeholder="Дата" value="'+moment(aData[0].end_date).format("YYYY-MM-DD")+'" ' + disStatDate + '>' +                             
+                '</div>' +
+                '<div class="col-sm-2">' +
+                '</div>' +
+              '</div>' +
+            '</div>' +
+          '</form>');        
+
           modal.find('.modal-footer').html('<button type="button" class="btn btn-default" data-dismiss="modal">Не, чет я погорячился.</button><button id="btn-edit" type="button" class="btn btn-primary" data-id="' + aData[0]._id + '">Меняем, я уверен!</button>');
           
+          modal.find('input').change(function (event) {
+            modal.find('.modal-error').html('');
+          });
+
+          modal.find(".col-sm-2 a").click(function (e) {            
+            if (status) {
+              var currentInput = $(e.target.closest('.form-group')).find("input").first();
+              if ($(currentInput).prop("placeholder") === "Логин") {
+                login = getRndLogin();
+                $(currentInput).val(type + login).change();
+              } else if ($(currentInput).prop("placeholder") === "Пароль") {
+                pass = getRndPass();
+                $(currentInput).val(pass).change();
+              }        
+            }
+          });
+
+          modal.find('select[placeholder="Статус"]').change(function (event) {                       
+            modal.find('.modal-error').html('');
+            var select = $(this);
+            status = $(event.target).find('option:selected').first().val();
+            if (status == 2) {
+              modal.find('input[placeholder="Дата"]').val(date).prop("disabled", false);
+            } else {
+              modal.find('input[placeholder="Дата"]').val(null).prop("disabled", true);
+            }
+          });
+
           $('#btn-edit').click(function (event) {
             modal.find('.modal-error').text('');
             var id = $(this).data("id");
@@ -307,8 +365,6 @@ $(document).ready(function() {
               status: $(status).val(),
               end_date: $(end_date).val()? moment($(end_date).val()).valueOf(): null
             };
-
-            console.log(data);
             
             $.ajax({
               url: "/rows",
@@ -350,7 +406,6 @@ $(document).ready(function() {
 
           modal.find('.modal-body select').change(function () {
             $( ".modal-body select option:selected" ).each(function() {
-              console.log($( this ).val());
               if ($( this ).val() == 2) {
                 $( "input[type='date']" ).prop('disabled', false);
               } else {
@@ -371,8 +426,6 @@ $(document).ready(function() {
               end_date: $(end_date).val()? moment($(end_date).val()).valueOf(): null
             };
 
-            console.log(data);
-            
             $.ajax({
               url: "/rows",
               method: "PUT",
@@ -392,32 +445,38 @@ $(document).ready(function() {
       case 'delete':
         modal.find('.modal-title').text('Удаление');
         modal.find('.modal-error').text('');
+        var ids = [];
+
+        aData.forEach(function (item) {
+          ids.push(item._id);
+        });
+
         if (aData.length === 1) {
           modal.find('.modal-body').html('Братюнь, ты выделил одну запись. Уверен что нужно ее удалить?');        
-          modal.find('.modal-footer').html('<button type="button" class="btn btn-default" data-dismiss="modal">Не, чет я погорячился.</button><button id="btn-delete" type="button" class="btn btn-primary" data-id="' + aData[0]._id + '">Агась, удаляем к чертям!</button>');
+          modal.find('.modal-footer').html('<button type="button" class="btn btn-default" data-dismiss="modal">Не, чет я погорячился.</button><button id="btn-delete" type="button" class="btn btn-primary">Агась, удаляем к чертям!</button>');
         } else if (aData.length > 1 && aData.length < 5) {
           modal.find('.modal-body').html('Братюнь, ты выделил ' + aData.length + ' записи. Уверен что нужно их удалить?');        
-          modal.find('.modal-footer').html('<button type="button" class="btn btn-default" data-dismiss="modal">Не, чет я погорячился.</button><button id="btn-delete" type="button" class="btn btn-primary" data-id="' + aData[0]._id + '">Агась, удаляем все к чертям!</button>');
+          modal.find('.modal-footer').html('<button type="button" class="btn btn-default" data-dismiss="modal">Не, чет я погорячился.</button><button id="btn-delete" type="button" class="btn btn-primary">Агась, удаляем все к чертям!</button>');
         } else if (aData.length >= 5) {
           modal.find('.modal-body').html('Братюнь, ты выделил ' + aData.length + ' записей. Уверен что нужно их удалить?');        
-          modal.find('.modal-footer').html('<button type="button" class="btn btn-default" data-dismiss="modal">Не, чет я погорячился.</button><button id="btn-delete" type="button" class="btn btn-primary" data-id="' + aData[0]._id + '">Агась, удаляем все к чертям!</button>');
+          modal.find('.modal-footer').html('<button type="button" class="btn btn-default" data-dismiss="modal">Не, чет я погорячился.</button><button id="btn-delete" type="button" class="btn btn-primary">Агась, удаляем все к чертям!</button>');
         } else {
           modal.find('.modal-body').html('И что тут удалять? Ничего не выделено...');
           modal.find('.modal-footer').html('<button type="button" class="btn btn-default" data-dismiss="modal">Ясно, понятно.</button>');
         }
         $('#btn-delete').click(function (event) {
           modal.find('.modal-error').text('');
-          // var aData = oTT.fnGetSelectedData();
-          var id = $(this).data("id");            
-          modal.modal('hide');
           $.ajax({
             url: "/rows",
             method: "DELETE",
-            data: {_id: id}
+            data: {id: ids}
           }).done(function() {
+            modal.modal('hide');
             table.ajax.reload();
           }).fail(function(jqXHR, textStatus, errorThrown) {
-            modal.find('.modal-error').text(textStatus);
+            modal.find('.modal-error').html('<div class="alert alert-danger" role="alert">' +
+              '<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>' +
+              '<span class="sr-only">Error:</span>' + errorThrown + '</div>');
           });
         });      
       break;

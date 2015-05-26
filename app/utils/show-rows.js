@@ -5,7 +5,7 @@ module.exports = function (isAll, callback) {
   row(function (err, model) {
     if (err) callback(err);
     else {
-      model.find(conditions, {password: true, login: true, status:true, end_date: true},function (err, rows) {
+      model.find(conditions, {password: true, login: true, status:true, end_date: true, type: true},function (err, rows) {
         if (err) callback(err);
         else callback(null, rows);
       });

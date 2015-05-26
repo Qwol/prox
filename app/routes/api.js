@@ -22,19 +22,6 @@ router.put('/rows', function(req, res, next) {
   });
 });
 
-//remove one row
-router.delete('/rows', function(req, res, next) {
-  console.log(req.body);
-  remove_row(req.body, function (err, answer) {
-    console.log(answer);
-    if (err) next(err);
-    else {
-      console.log(saved_data);
-      res.status(200).end();
-    }
-  });
-});
-
 // //write active rows to file
 // router.copy('/rows', function(req, res, next) {
 //   write_file(function (err) {
@@ -107,12 +94,22 @@ router.get('/freeip', function(req, res, next) {
   });
 });
 
-//add new row
+//add acc row
 router.post('/rows', function(req, res, next) {
   add_row(req.body, function (err, saved_data) {
     if (err) next(err);
     else {
       console.log(saved_data);
+      res.status(200).end();
+    }
+  });
+});
+
+//remove rows
+router.delete('/rows', function(req, res, next) { 
+  remove_row(req.body, function (err) {
+    if (err) next(err);
+    else {      
       res.status(200).end();
     }
   });

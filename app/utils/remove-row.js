@@ -1,13 +1,19 @@
 var row = require('../models/user');
 
-module.exports = function (removing_row, callback) {
+module.exports = function (data, callback) {
   row(function (err, model) {
     if (err) callback(err);
     else {
-      model.remove(removing_row, function (err) {
+      model.update({_id: {$in: data.id}}, {
+        login: null,
+        password: null,
+        status: 0,
+        end_date: null
+      }, { multi: true }, function (err) {
         if (err) callback(err);
-        else callback(null, {response: 'OK'});
+        else callback(null);
       });
     }
   });
 };
+
