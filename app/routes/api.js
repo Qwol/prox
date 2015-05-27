@@ -3,24 +3,14 @@ var router = express.Router();
 var add_row = require('../utils/add-row');
 var edit_row = require('../utils/edit-row');
 var remove_row = require('../utils/remove-row');
-var write_file = require('../utils/write-file');
-var switch_on = require('../utils/switch-on');
-var switch_off = require('../utils/switch-off');
+// var write_file = require('../utils/write-file');
+// var switch_on = require('../utils/switch-on');
+// var switch_off = require('../utils/switch-off');
 var show_rows = require('../utils/show-rows');
 var show_ips = require('../utils/show-ips');
 var moment = require('moment');
 
-//edit one row
-router.put('/rows', function(req, res, next) {
-  edit_row(req.body, function (err, saved_data) {
-    console.log(err);
-    if (err) next(err);
-    else {
-      console.log(saved_data);
-      res.status(200).end();
-    }
-  });
-});
+
 
 // //write active rows to file
 // router.copy('/rows', function(req, res, next) {
@@ -94,12 +84,11 @@ router.get('/freeip', function(req, res, next) {
   });
 });
 
-//add acc row
+//add add row
 router.post('/rows', function(req, res, next) {
   add_row(req.body, function (err, saved_data) {
     if (err) next(err);
     else {
-      console.log(saved_data);
       res.status(200).end();
     }
   });
@@ -110,6 +99,19 @@ router.delete('/rows', function(req, res, next) {
   remove_row(req.body, function (err) {
     if (err) next(err);
     else {      
+      res.status(200).end();
+    }
+  });
+});
+
+//edit rows
+router.put('/rows', function(req, res, next) {
+  console.log(req.body);
+  edit_row(req.body, function (err, saved_data) {
+    console.log(err);
+    if (err) next(err);
+    else {
+      console.log(saved_data);
       res.status(200).end();
     }
   });

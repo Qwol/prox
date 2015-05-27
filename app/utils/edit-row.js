@@ -1,37 +1,71 @@
-var mongoose = require('mongoose');
 var row = require('../models/user');
 
-module.exports = function (edited_row, callback) {
-            console.log(edited_row);
-              //   login: $(login).val(),
-              // password: $(password).val(),
-              // ip: $(ip).val(),
-              // status: status,
-              // end_date: end_
-  // var regex = new RegExp('^\\w+'+myStr+'\\w+$','i');
-  if (edited_row && edited_row._id) {
-    if (edited_row.status != 2) {
+function validation (data) {
+  // var data = {
+  //   login: login,
+  //   password: password,
+  //   ip: ip,
+  //   type: type,
+  //   exist: exist
+  // };
+  var login = data.login;
+  var password = data.password;
+  var ip = data.ip;
+  var type = data.type;
+  var status = parseInt(data.status);
+  switch (status) {
+    case 0:
+      data.login = null;
+      data.password = null;
+      data.end_date = null;
+      break;
+    case 1:
+      if (!(/\d{10}/).test(login.substr(-10, 10))) return "Некорректный логин!";  
+      if (!(/[a-z0-9]{10}/).test(password)) return "Некорректный пароль!";
+      if (login.substr(0, login.length - 10) !== type) return "Логин не соответствует выбранному типу учетной записи!";
+      data.end_date = null;
+      break;
+    case 2:
+      if (!(/\d{10}/).test(login.substr(-10, 10))) return "Некорректный логин!";  
+      if (!(/[a-z0-9]{10}/).test(password)) return "Некорректный пароль!";
+      if (login.substr(0, login.length - 10) !== type) return "Логин не соответствует выбранному типу учетной записи!";
+      console.log(data.end_date);
+      console.log(Date.now());
+      if (data.end_date < Date.now()) return "Некорректная дата завершения работы учетной записи!"
+      break;
+    case 3:
+      data.login = undefined;
+      data.password = undefined;
+      data.end_date = undefined;
+      break;
+  }  
+}
+
+module.exports = function (data, callback) {
+  var valid = validation(data);
+  if (valid) callback(new Error(valid));
+  else {
+    if (data.status < 2) {
       console.log('not active');
-      edited_row.end_date = null; 
+      data.end_date = null; 
+    } 
+    if (data.status == 0) {
+      data.login = null;
+      data.password = null;
     }
+
     row(function (err, model) {
       if (err) callback(err);
-      else {
-        if (typeof(edited_row._id) == "object" ) {
-          var objectIdsArray = [];
-          for (i=0; i < edited_row._id.length; i++) {
-            objectIdsArray.push(mongoose.Types.ObjectId(edited_row._id[i]));
-          }
-          model.update({_id: {$in: objectIdsArray}}, {status: edited_row.status, end_date: edited_row.end_date}, { multi: true }, function (err, saved_row) {
-            if (err) callback(err);
-            else callback(null, saved_row);
-          });
-        } else if (typeof(edited_row._id) == "string" ) {
-          model.update({_id: edited_row._id}, edited_row, function (err, saved_row) {
-            if (err) callback(err);
-            else callback(null, saved_row);
-          });
-        }
+      else {               
+        model.update({_id: data.ip}, {
+          login: data.login,
+          password: data.password,
+          status: data.status,
+          end_date: data.end_date
+        }, function (err, saved_data) {
+          if (err) callback(err);
+          else callback(null, saved_data);
+        });      
       }
     });
   }
