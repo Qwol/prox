@@ -2,5 +2,6 @@
   "PORT": 8082,
   "MONGODB_USERS": "localhost:27017/Users",
   "FILE1": "/home/sergey/Github/adminka/app/public/chap-secrets",
-  "FILE2": "/home/sergey/Github/adminka/app/public/shaper.conf"
+  "FILE2": "/home/sergey/Github/adminka/app/public/shaper.conf",
+  "EMAIL": "qwolajin@gmail.com"
 }

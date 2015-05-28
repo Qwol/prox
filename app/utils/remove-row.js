@@ -11,7 +11,14 @@ module.exports = function (data, callback) {
         end_date: null
       }, { multi: true }, function (err) {
         if (err) callback(err);
-        else callback(null);
+        else {          
+          writeSecret(function (err) {
+            if (err) callback(err);
+            else {
+              callback(null);
+            }
+          }); 
+        }
       });
     }
   });

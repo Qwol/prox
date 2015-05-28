@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var add_row = require('../utils/add-row');
 var edit_row = require('../utils/edit-row');
+var edit_rows = require('../utils/edit-rows');
 var remove_row = require('../utils/remove-row');
 // var write_file = require('../utils/write-file');
 // var switch_on = require('../utils/switch-on');
@@ -104,14 +105,22 @@ router.delete('/rows', function(req, res, next) {
   });
 });
 
-//edit rows
-router.put('/rows', function(req, res, next) {
-  console.log(req.body);
+//edit row
+router.put('/row', function(req, res, next) {
   edit_row(req.body, function (err, saved_data) {
     console.log(err);
     if (err) next(err);
     else {
-      console.log(saved_data);
+      res.status(200).end();
+    }
+  });
+});
+
+//edit rows
+router.put('/rows', function(req, res, next) {
+  edit_rows(req.body, function (err) {
+    if (err) next(err);
+    else {
       res.status(200).end();
     }
   });

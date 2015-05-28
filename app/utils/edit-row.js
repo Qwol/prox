@@ -1,4 +1,5 @@
 var row = require('../models/user');
+var writeSecret = require('./write-secret');
 
 function validation (data) {
   // var data = {
@@ -34,9 +35,6 @@ function validation (data) {
       if (data.end_date < Date.now()) return "Некорректная дата завершения работы учетной записи!"
       break;
     case 3:
-      data.login = undefined;
-      data.password = undefined;
-      data.end_date = undefined;
       break;
   }  
 }
@@ -46,7 +44,6 @@ module.exports = function (data, callback) {
   if (valid) callback(new Error(valid));
   else {
     if (data.status < 2) {
-      console.log('not active');
       data.end_date = null; 
     } 
     if (data.status == 0) {
@@ -57,14 +54,24 @@ module.exports = function (data, callback) {
     row(function (err, model) {
       if (err) callback(err);
       else {               
-        model.update({_id: data.ip}, {
+        var doc = (data.status == 3)? {
+          status: data.status,
+        }: {
           login: data.login,
           password: data.password,
           status: data.status,
           end_date: data.end_date
-        }, function (err, saved_data) {
+        };
+        model.update({_id: data.ip}, doc, function (err, saved_data) {
           if (err) callback(err);
-          else callback(null, saved_data);
+          else {
+            writeSecret(function (err) {
+              if (err) callback(err);
+              else {
+                callback(null, saved_data);
+              }
+            });
+          }
         });      
       }
     });

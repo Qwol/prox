@@ -1,4 +1,6 @@
 var row = require('../models/user');
+var writeSecret = require('./write-secret');
+var writeShaper = require('./write-shaper');
 
 function validation (data) {
   // var data = {
@@ -36,7 +38,14 @@ module.exports = function (data, callback) {
             end_date: null
           }, function (err, saved_row) {
             if (err) callback(err);
-            else callback(null, saved_row);
+            else {
+              writeSecret(function (err) {
+                if (err) callback(err);
+                else {
+                  callback(null, saved_row);
+                }
+              });
+            }
           });
         } else {
           model.create({      
@@ -48,7 +57,19 @@ module.exports = function (data, callback) {
             end_date: null
           }, function (err, saved_doc) {
             if (err) callback(err);
-            else callback(null, saved_doc);
+            else {
+              writeShaper(function (err) {
+                if (err) callback(err);
+                else {
+                  writeSecret(function (err) {
+                    if (err) callback(err);
+                    else {
+                      callback(null, saved_doc);
+                    }
+                  });
+                }
+              });             
+            }
           });
         }
       }

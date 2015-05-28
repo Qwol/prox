@@ -7,23 +7,21 @@ module.exports = function (callback) {
     row(function (err, model) {
       if (err) callback(err);
       else {
-        model.find({status: { $gte: 1}}, function (err, rows) {
+        model.find({status: { $gt: 0, $lt: 3}}, function (err, rows) {
           if (err) callback(err);
           else {                           
             var str = '';
-            rows.forEach(function (item) {
+            rows.forEach(function (item, index) {
               str += item.login + '\t';
               str += 'pptpd\t';              
               str += item.password + '\t';
-              str += item.ip + '\n';
+              str += item._id;
+              if (index < (rows.length - 1)) str += '\n';
             });
-            try {
-              fs.writeFileSync(config.secrets_path, str);
-            } catch (ex) {
-              callback(ex);
-              return undefined;
-            }
-            callback();
+            fs.writeFile(config.secrets_path, str, function (err) {
+              if (err) callback(err);
+              else callback();
+            });
           }
         });
       }
