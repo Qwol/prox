@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "make dev"
+    "start": "make prod"
   },
   "dependencies": {
     "async": "^1.0.0",

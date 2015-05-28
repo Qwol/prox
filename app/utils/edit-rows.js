@@ -55,7 +55,12 @@ function getCb (data) {
       } else return function (row, cb) { 
         cb(null);
       };
-
+      break;
+    case 2:
+      return function (row, cb) { 
+        cb(new Error('Для этого статуса редактирование не предназначено'));
+      };
+      break;
     case 3:
       if (data.status == 1) {
         return function (row, cb) {          
