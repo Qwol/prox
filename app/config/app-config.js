@@ -5,9 +5,11 @@ var db_users = config.MONGODB_USERS? 'mongodb://' + config.MONGODB_USERS: undefi
 var email = config.EMAIL? config.EMAIL: undefined;
 var file1_path = config.FILE1? config.FILE1: undefined;
 var file2_path = config.FILE2? config.FILE2: undefined;
+var period = config.PERIOD? config.PERIOD: 600000;
 
 module.exports = { 
   port: port,
+  period: period,
   db_users: db_users,
   email: email, 
   secrets_path: file1_path,
