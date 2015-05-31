@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "make prod"
+    "start": "NODE_ENV=production nodejs server.js"
   },
   "dependencies": {
     "async": "^1.0.0",

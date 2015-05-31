@@ -1,4 +1,5 @@
 var row = require('../models/user');
+var writeSecret = require('./write-secret');
 
 module.exports = function (data, callback) {
   row(function (err, model) {

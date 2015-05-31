@@ -10,17 +10,26 @@ module.exports = function (callback) {
         model.find({status: { $gt: 0, $lt: 3}}, function (err, rows) {
           if (err) callback(err);
           else {                           
-            var str = '';
+            var secret_str = '';
+            var user_str = '';
             rows.forEach(function (item, index) {
-              str += item.login + '\t';
-              str += 'pptpd\t';              
-              str += item.password + '\t';
-              str += item._id;
-              if (index < (rows.length - 1)) str += '\n';
+              secret_str += item.login + '\t';
+              secret_str += 'pptpd\t';              
+              secret_str += item.password + '\t';
+              secret_str += item._id;
+              user_str += item.login + ':CL:' + item.password;
+
+              if (index < (rows.length - 1)) {
+                secret_str += '\n';
+                user_str += '\n';
+              }
             });
-            fs.writeFile(config.secrets_path, str, function (err) {
+            fs.writeFile(config.secrets_path, secret_str, function (err) {
               if (err) callback(err);
-              else callback();
+              else fs.writeFile(config.user_path, user_str, function (err) {
+                if (err) callback(err);
+                else callback();
+              });
             });
           }
         });
