@@ -16,10 +16,10 @@ function validation (data) {
   var ip = data.ip;
 
   if (!type) return "Тип записи не указан!";
-  if (!(/\d{10}/).test(login.substr(-10, 10))) return "Некорректный логин!";  
-  if (!(/[a-z0-9]{10}/).test(password)) return "Некорректный пароль!";
+  if (type !== 'a' && !(/\d{10}/).test(login.substr(-10, 10))) return "Некорректный логин!";  
+  if (type !== 'a' && !(/[a-z0-9]{10}/).test(password)) return "Некорректный пароль!";
   if (!(/\d{0,3}\.\d{0,3}\.\d{0,3}\.\d{0,3}/).test(ip)) return "Некорректный IP!";   
-  if (login.substr(0, login.length - 10) !== type) return "Логин не соответствует выбранному типу учетной записи!";
+  if (type !== 'a' && login.substr(0, login.length - 10) !== type) return "Логин не соответствует выбранному типу учетной записи!";
 }
 
 module.exports = function (data, callback) {

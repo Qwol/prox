@@ -21,15 +21,15 @@ function validation (data) {
       data.end_date = null;
       break;
     case 1:
-      if (!(/\d{10}/).test(login.substr(-10, 10))) return "Некорректный логин!";  
-      if (!(/[a-z0-9]{10}/).test(password)) return "Некорректный пароль!";
-      if (login.substr(0, login.length - 10) !== type) return "Логин не соответствует выбранному типу учетной записи!";
+      if (type !== 'a' && !(/\d{10}/).test(login.substr(-10, 10))) return "Некорректный логин!";  
+      if (type !== 'a' && !(/[a-z0-9]{10}/).test(password)) return "Некорректный пароль!";
+      if (type !== 'a' && login.substr(0, login.length - 10) !== type) return "Логин не соответствует выбранному типу учетной записи!";
       data.end_date = null;
       break;
     case 2:
-      if (!(/\d{10}/).test(login.substr(-10, 10))) return "Некорректный логин!";  
-      if (!(/[a-z0-9]{10}/).test(password)) return "Некорректный пароль!";
-      if (login.substr(0, login.length - 10) !== type) return "Логин не соответствует выбранному типу учетной записи!";
+      if (type !== 'a' && !(/\d{10}/).test(login.substr(-10, 10))) return "Некорректный логин!";  
+      if (type !== 'a' && !(/[a-z0-9]{10}/).test(password)) return "Некорректный пароль!";
+      if (type !== 'a' && login.substr(0, login.length - 10) !== type) return "Логин не соответствует выбранному типу учетной записи!";
       console.log(data.end_date);
       console.log(Date.now());
       if (data.end_date < Date.now()) return "Некорректная дата завершения работы учетной записи!"

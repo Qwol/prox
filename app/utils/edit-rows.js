@@ -17,7 +17,6 @@ var report = {
   xl:'',
   t: ''
 };
-var attachments = [];
 
 function getRndPass () {  
   return Math.random().toString(36).slice(2, 12);
@@ -79,6 +78,7 @@ function getCb (data) {
 }
 
 module.exports = function (data, callback) {
+  var attachments = [];
 
   var cbFunc = getCb(data);
 

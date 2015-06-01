@@ -16,13 +16,13 @@ module.exports = function (callback) {
               secret_str += item.login + '\t';
               secret_str += 'pptpd\t';              
               secret_str += item.password + '\t';
-              secret_str += item._id;
-              user_str += item.login + ':CL:' + item.password;
+              secret_str += item._id + '\n';
+              user_str += item.login + ':CL:' + item.password + '\n';
 
-              if (index < (rows.length - 1)) {
-                secret_str += '\n';
-                user_str += '\n';
-              }
+              // if (index < (rows.length - 1)) {
+              //   secret_str += '\n';
+              //   user_str += '\n';
+              // }
             });
             fs.writeFile(config.secrets_path, secret_str, function (err) {
               if (err) callback(err);

@@ -120,14 +120,14 @@ $(document).ready(function() {
     oTT.fnSelectNone();
   });
 
-  $('#showall').click(function (event) {
-    var chb = $(this).find('input');   
-    if ($(chb).prop("checked")) {
+  $('#showall').click(function (event) {    
+    var chb = $(this).find('.all-rows-checkbox');   
+    if ($(chb).hasClass("glyphicon-check")) {
       table.ajax.url("/rows").load();
-      $(chb).prop("checked", false);
+      $(chb).removeClass("glyphicon-check").addClass("glyphicon-unchecked");
     } else {
       table.ajax.url("/rows?all=true").load();
-      $(chb).prop("checked", true);
+      $(chb).removeClass("glyphicon-unchecked").addClass("glyphicon-check");
     }    
   });
 
