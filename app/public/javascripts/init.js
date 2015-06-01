@@ -37,6 +37,9 @@ $(document).ready(function() {
     paging: false,
     bInfo: false,
     scrollY: 400,
+    aoColumnDefs: [
+        { "sType": "numeric" }
+    ],
     language: {
       zeroRecords: "Нет записей для отображения"
     },
@@ -56,7 +59,41 @@ $(document).ready(function() {
       { data: 'login' },
       { data: 'password' },
       { data: '_id' },
-      { data: 'type' },
+      { data: 'type',
+        render: function ( data, type, row ) {
+          var dispData = data;
+          var sortData = data;
+          switch (data) {
+            case 'a':
+              dispData = "Admin";
+              sortData = "1";
+              break;
+            case 's':
+              dispData = "Small";
+              sortData = "2";
+              break;                
+            case 'm':
+              dispData = "Medium";
+              sortData = "3";
+              break;  
+            case 'l':
+              dispData = "Large";
+              sortData = "4";
+              break;               
+            case 'xl':
+              dispData = "XLarge";
+              sortData = "5";
+              break;
+            case 't':
+              dispData = "Test";
+              sortData = "6";
+              break;                          
+          }
+          if ( type === 'display' || type === 'filter') return dispData;         
+          else if (type === 'sort') return sortData;
+          else return data;
+        }
+      },
       { data: 'status',
         render: function ( data, type, row ) {
           // If display or filter data is requested, format the status
@@ -72,13 +109,10 @@ $(document).ready(function() {
               break;  
             case 3:
               return "<span class='text-danger'>истек</span>";
-              break;               
+              break;    
+            default:
+              return data;           
           }
-          if ( type === 'display' || type === 'filter' ) {
-              var d = moment(data);
-              return d.format("DD.MM.YYYY (HH:mm)");
-          }
-          return data;
         }
       },
       { 
