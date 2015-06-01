@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "NODE_ENV=production forever start --minUptime 60000 --spinSleepTime 30000 server.js"
+    "start": "NODE_ENV=production forever start --minUptime 60000 --spinSleepTime 30000 -w server.js"
   },
   "dependencies": {
     "async": "^1.0.0",
