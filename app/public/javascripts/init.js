@@ -36,7 +36,7 @@ $(document).ready(function() {
     sDom: 'T<"clear ">lfrtip',
     paging: false,
     bInfo: false,
-    order: JSON.parse(localStorage.getItem('order'))? JSON.parse(localStorage.getItem('order')): [ 4, 'asc' ],,
+    order: JSON.parse(localStorage.getItem('order'))? JSON.parse(localStorage.getItem('order')): [ 4, 'asc' ],
     aoColumnDefs: [
         { "sType": "numeric" }
     ],
