@@ -51,7 +51,7 @@ $(document).ready(function() {
     //   }
     // ],
     ajax: {
-      url: "/rows",              
+      url: JSON.parse(localStorage.getItem('isAll'))? "/rows?all=true": "/rows",              
       type: "GET",
       dataSrc: ""
     },
@@ -145,23 +145,29 @@ $(document).ready(function() {
     if ($(e.target).prop("tagName") === 'BODY') oTT.fnSelectNone();
   });
 
+
   $('#selectall').click(function (event) {
     oTT.fnSelectNone();
-    oTT.fnSelectAll(true);
+    oTT.fnSelectAll(true);    
   });
 
   $('#deselectall').click(function (event) {
-    oTT.fnSelectNone();
+    oTT.fnSelectNone();    
   });
+
+  if (JSON.parse(localStorage.getItem('isAll'))) $('.all-rows-checkbox').removeClass("glyphicon-unchecked").addClass("glyphicon-check");
+  else $('.all-rows-checkbox').removeClass("glyphicon-check").addClass("glyphicon-unchecked");
 
   $('#showall').click(function (event) {    
     var chb = $(this).find('.all-rows-checkbox');   
     if ($(chb).hasClass("glyphicon-check")) {
       table.ajax.url("/rows").load();
       $(chb).removeClass("glyphicon-check").addClass("glyphicon-unchecked");
+      localStorage.setItem('isAll', 'false');
     } else {
       table.ajax.url("/rows?all=true").load();
       $(chb).removeClass("glyphicon-unchecked").addClass("glyphicon-check");
+      localStorage.setItem('isAll', 'true');
     }    
   });
 

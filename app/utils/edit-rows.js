@@ -34,6 +34,7 @@ function getCb (data) {
           row.login = row.type + getRndLogin();
           row.password = getRndPass();
           row.status = data.status;
+          row.end_date = null;
           if (!(types.indexOf(row.type) + 1)) types.push(row.type);
           report[row.type] += 'Login: ' + row.login + '\t||\tPassword: ' + row.password +'\n';
           row.save(cb);
@@ -66,6 +67,7 @@ function getCb (data) {
           row.login = row.type + getRndLogin();
           row.password = getRndPass();
           row.status = data.status;
+          row.end_date = null;
           if (!(types.indexOf(row.type) + 1)) types.push(row.type);
           report[row.type] += 'Login: ' + row.login + '\t||\tPassword: ' + row.password +'\n';
           row.save(cb);
