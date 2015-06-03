@@ -36,7 +36,7 @@ $(document).ready(function() {
     sDom: 'T<"clear ">lfrtip',
     paging: false,
     bInfo: false,
-    scrollY: 400,
+    // scrollY: 400,
     aoColumnDefs: [
         { "sType": "numeric" }
     ],
