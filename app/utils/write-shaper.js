@@ -20,8 +20,8 @@ module.exports = function (callback) {
           else {                           
             var str = '';
             rows.forEach(function (item, index) {
-              str += item._id +':' + speed[item.type];
-              if (index < (rows.length - 1)) str += '\n';
+              str += item._id +':' + speed[item.type] + '\n';
+              // if (index < (rows.length - 1)) str += '\n';
             });
             fs.writeFile(config.shaper_path, str, function (err) {
               if (err) callback(err);
