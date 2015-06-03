@@ -36,7 +36,7 @@ $(document).ready(function() {
     sDom: 'T<"clear ">lfrtip',
     paging: false,
     bInfo: false,
-    // scrollY: 400,
+    order: JSON.parse(localStorage.getItem('order'))? JSON.parse(localStorage.getItem('order')): undefined,
     aoColumnDefs: [
         { "sType": "numeric" }
     ],
@@ -127,7 +127,6 @@ $(document).ready(function() {
         }
       }
     ],
-    order: [ 1, 'asc' ],
     tableTools: {
       sRowSelect: "os",
       sRowSelector: 'tr',
@@ -139,6 +138,11 @@ $(document).ready(function() {
 
   table.on( 'draw', function () {
     oTT.fnSelectNone();
+  });
+
+  table.on( 'order.dt', function () {
+    var order = table.order();
+    localStorage.setItem('order', JSON.stringify(order));   
   });
 
   $('body').click(function (e) {
