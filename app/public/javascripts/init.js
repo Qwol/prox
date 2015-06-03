@@ -385,7 +385,8 @@ $(document).ready(function() {
                   '</select>' +   
                 '</div>' +
                 '<div class="col-sm-4">' +    
-                  '<input type="date" min="' + moment(Date.now()).add(1, 'd').format("YYYY-MM-DD") + '" class="form-control" placeholder="Дата" value="' + (aData[0].end_date? moment(aData[0].end_date).format("YYYY-MM-DD"): "") + '" ' + disStatDate + '>' +                             
+                  // '<input type="date" min="' + moment(Date.now()).add(1, 'd').format("YYYY-MM-DD") + '" class="form-control" placeholder="Дата" value="' + (aData[0].end_date? moment(aData[0].end_date).format("YYYY-MM-DD"): "") + '" ' + disStatDate + '>' +                             
+                  '<input type="date" class="form-control" placeholder="Дата" value="' + (aData[0].end_date? moment(aData[0].end_date).format("YYYY-MM-DD"): "") + '" ' + disStatDate + '>' +                                               
                 '</div>' +
                 '<div class="col-sm-2">' +
                 '</div>' +
