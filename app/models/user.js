@@ -3,7 +3,7 @@ var connection   = require('../config/db-connection.js').db_users;
 
 var userSchema = mongoose.Schema({
   _id: String,
-  login: String,
+  login: {type: String, index: { unique: true, sparse: true}},
   password: String,
   type: String,
   status: Number,

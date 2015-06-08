@@ -32,7 +32,7 @@ function validation (data) {
       if (type !== 'a' && login.substr(0, login.length - 10) !== type) return "Логин не соответствует выбранному типу учетной записи!";
       console.log(data.end_date);
       console.log(Date.now());
-      if (data.end_date < Date.now()) return "Некорректная дата завершения работы учетной записи!"
+      // if (data.end_date < Date.now()) return "Некорректная дата завершения работы учетной записи!"
       break;
     case 3:
       break;
