@@ -6,7 +6,7 @@ module.exports = function (data, callback) {
     if (err) callback(err);
     else {
       model.update({_id: {$in: data.id}}, {
-        login: null,
+        $unset: { login: ""},
         password: null,
         status: 0,
         end_date: null
