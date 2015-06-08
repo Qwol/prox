@@ -54,9 +54,15 @@ module.exports = function (data, callback) {
     row(function (err, model) {
       if (err) callback(err);
       else {               
-        var doc = (data.status == 3)? {
+        var doc = {};
+        if (data.status == 3) doc = {status: data.status};
+        else if (data.status == 0) doc = {
+          $unset: { login: ""},
+          password: data.password,
           status: data.status,
-        }: {
+          end_date: data.end_date
+        };
+        else doc = {
           login: data.login,
           password: data.password,
           status: data.status,
