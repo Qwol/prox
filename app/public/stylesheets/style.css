@@ -30,3 +30,5 @@
 .addon-fixed-width {
   width: 10em;
 }
+
+body { padding-top: 70px; }
