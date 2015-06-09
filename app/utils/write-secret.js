@@ -17,8 +17,7 @@ module.exports = function (callback) {
               secret_str += 'pptpd\t';              
               secret_str += item.password + '\t';
               secret_str += item._id + '\n';
-              user_str += item.login + ':CL:' + item.password + '\n';
-
+              if (item.type != 's') user_str += item.login + ':CL:' + item.password + '\n';
               // if (index < (rows.length - 1)) {
               //   secret_str += '\n';
               //   user_str += '\n';
