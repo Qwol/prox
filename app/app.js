@@ -1,9 +1,14 @@
 var express = require('express');
+var passport = require('passport');
+var session = require('express-session');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
 var config = require('./config/app-config.js');
+var local_strat = require('./config/strategy-local')
+
+var row = require('./models/user');
 
 var api = require('./routes/api');
 
@@ -19,6 +24,26 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
+
+app.use(session({ secret: 'keyboard cat' }));
+passport.use(local_strat);
+app.use(passport.initialize());
+app.use(passport.session());
+
+passport.serializeUser(function(user, done) {
+  done(null, user._id);
+});
+
+passport.deserializeUser(function(id, done) {
+  row(function (err, model) {
+    if (err) callback(err);
+    else {
+      model.findOne({_id: id}, function(err, user) {
+        done(err, user);
+      });
+    }
+  });
+});
 
 app.use(api);
 

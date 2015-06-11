@@ -1,17 +1,25 @@
 var express = require('express');
+var passport = require('passport');
 var router = express.Router();
 var add_row = require('../utils/add-row');
 var edit_row = require('../utils/edit-row');
 var edit_rows = require('../utils/edit-rows');
 var remove_row = require('../utils/remove-row');
-// var write_file = require('../utils/write-file');
-// var switch_on = require('../utils/switch-on');
-// var switch_off = require('../utils/switch-off');
 var show_rows = require('../utils/show-rows');
 var show_ips = require('../utils/show-ips');
 var moment = require('moment');
 
+function mustAuthenticatedMw (req, res, next) {
+  req.isAuthenticated()
+    ? next()
+    : res.redirect('/login');
+}
 
+function mustBeAdmin (req, res, next) {
+  (req.user.type === 'a')
+    ? next()
+    : res.redirect('/login');
+}
 
 // //write active rows to file
 // router.copy('/rows', function(req, res, next) {
@@ -61,12 +69,24 @@ var moment = require('moment');
 
 
 //init
-router.get('/', function(req, res) {
+router.get('/', mustAuthenticatedMw, mustBeAdmin, function(req, res) {
   res.render('pages/index');       
 });
 
+//login
+router.get('/login', function(req, res) {
+  res.render('pages/login');       
+});
+
+router.post('/login',
+  passport.authenticate('local', { 
+    successRedirect: '/'
+  })
+);
+
+
 //show all rows
-router.get('/rows', function(req, res, next) {  
+router.get('/rows', mustAuthenticatedMw, mustBeAdmin, function(req, res, next) {  
   show_rows(req.query.all,function (err, rows) {
     if (err) next(err);
     else {
@@ -76,7 +96,7 @@ router.get('/rows', function(req, res, next) {
 });
 
 //show free ips
-router.get('/freeip', function(req, res, next) {  
+router.get('/freeip', mustAuthenticatedMw, mustBeAdmin, function(req, res, next) {  
   show_ips(req.query.type,function (err, rows) {
     if (err) next(err);
     else {
@@ -86,7 +106,7 @@ router.get('/freeip', function(req, res, next) {
 });
 
 //add add row
-router.post('/rows', function(req, res, next) {
+router.post('/rows', mustAuthenticatedMw, mustBeAdmin, function(req, res, next) {
   add_row(req.body, function (err, saved_data) {
     if (err) next(err);
     else {
@@ -96,7 +116,7 @@ router.post('/rows', function(req, res, next) {
 });
 
 //remove rows
-router.delete('/rows', function(req, res, next) { 
+router.delete('/rows', mustAuthenticatedMw, mustBeAdmin, function(req, res, next) { 
   remove_row(req.body, function (err) {
     if (err) next(err);
     else {      
@@ -106,7 +126,7 @@ router.delete('/rows', function(req, res, next) {
 });
 
 //edit row
-router.put('/row', function(req, res, next) {
+router.put('/row', mustAuthenticatedMw, mustBeAdmin, function(req, res, next) {
   edit_row(req.body, function (err, saved_data) {
     console.log(err);
     if (err) next(err);
@@ -117,7 +137,7 @@ router.put('/row', function(req, res, next) {
 });
 
 //edit rows
-router.put('/rows', function(req, res, next) {
+router.put('/rows', mustAuthenticatedMw, mustBeAdmin, function(req, res, next) {
   edit_rows(req.body, function (err) {
     if (err) next(err);
     else {
