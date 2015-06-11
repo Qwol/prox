@@ -56,7 +56,11 @@ $(document).ready(function() {
       dataSrc: ""
     },
     columns: [
-      { data: 'login' },
+      { data: function ( row, type, val, meta ) {
+          if (row.login) return row.login;
+          else return null;
+        }
+      },
       { data: 'password' },
       { data: '_id' },
       { data: 'type',
