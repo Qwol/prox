@@ -11,14 +11,17 @@ var moment = require('moment');
 
 function mustAuthenticatedMw (req, res, next) {
   req.isAuthenticated()
-    ? next()
-    : res.redirect('/login');
+    ? req.auth = true
+    : req.auth = false;
+  next();
 }
 
 function mustBeAdmin (req, res, next) {
-  (req.user.type === 'a')
-    ? next()
-    : res.redirect('/login');
+  if (req.auth) {
+    (req.user.type === 'a')
+      ? next()
+      : next(new Error('Permission denied'));
+  } else next(new Error('Unauthorized'));
 }
 
 // //write active rows to file
@@ -69,20 +72,19 @@ function mustBeAdmin (req, res, next) {
 
 
 //init
-router.get('/', mustAuthenticatedMw, mustBeAdmin, function(req, res) {
-  res.render('pages/index');       
+router.get('/', mustAuthenticatedMw, function(req, res) {
+  res.render('pages/index', {auth: req.auth, message: null});       
 });
 
-//login
-router.get('/login', function(req, res) {
-  res.render('pages/login');       
+router.post('/login', function (req, res, next) {
+  var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  passport.authenticate('local', function (err, user, info) {
+    if (err) return next(err);
+    else if (user) {
+      res.redirect('/');
+    } else return res.render('pages/index', {auth: req.auth, message: info.message}); 
+  })(req, res, next);
 });
-
-router.post('/login',
-  passport.authenticate('local', { 
-    successRedirect: '/'
-  })
-);
 
 
 //show all rows

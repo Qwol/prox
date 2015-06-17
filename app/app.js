@@ -25,7 +25,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-app.use(session({ secret: 'keyboard cat' }));
+app.use(session({ secret: 'stop feed plz' }));
 passport.use(local_strat);
 app.use(passport.initialize());
 app.use(passport.session());

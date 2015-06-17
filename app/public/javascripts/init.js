@@ -53,7 +53,10 @@ $(document).ready(function() {
     ajax: {
       url: JSON.parse(localStorage.getItem('isAll'))? "/rows?all=true": "/rows",              
       type: "GET",
-      dataSrc: ""
+      dataSrc: "",
+      error: function (xhr, error, thrown) {
+       console.log(xhr.responseText);
+      }
     },
     columns: [
       { data: 'login' },
@@ -133,7 +136,9 @@ $(document).ready(function() {
       aButtons: []
     }
   });
-
+  $.fn.dataTable.ext.errMode =  function (settings, helpPage, message ) { 
+    console.log(message);
+  };
   var oTT = TableTools.fnGetInstance('main_table');
 
   table.on( 'draw', function () {
