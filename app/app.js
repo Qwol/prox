@@ -3,6 +3,8 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
+var auth = require('./utils/auth');
+
 var config = require('./config/app-config.js');
 
 var api = require('./routes/api');
@@ -20,6 +22,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+// Authenticator
+app.use('/', auth(config.user, config.password));
 app.use(api);
 
 // catch 404 and forward to error handler
