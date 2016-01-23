@@ -80,7 +80,6 @@ function getCb (data) {
 }
 
 module.exports = function (data, callback) {
-  var attachments = [];
 
   var cbFunc = getCb(data);
 
@@ -98,6 +97,7 @@ module.exports = function (data, callback) {
       model.find({_id: { $in: data.ips}}, function (err, rows) {
         if (err) callback(err);
         else {
+          var attachments = [];
           async.each(rows, cbFunc, function (err) {
             if (err) callback(err);
             else {

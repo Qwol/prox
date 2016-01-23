@@ -108,7 +108,6 @@ router.delete('/rows', function(req, res, next) {
 //edit row
 router.put('/row', function(req, res, next) {
   edit_row(req.body, function (err, saved_data) {
-    console.log(err);
     if (err) next(err);
     else {
       res.status(200).end();
