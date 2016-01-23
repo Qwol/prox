@@ -8,16 +8,6 @@ var writeSecret = require('./write-secret');
 
 var transporter = nodemailer.createTransport();
 
-var types = [];
-var report = {
-  a: '',
-  s: '',
-  m: '',
-  l: '',
-  xl:'',
-  t: ''
-};
-
 function getRndPass () {  
   return Math.random().toString(36).slice(2, 12);
 }
@@ -26,7 +16,7 @@ function getRndLogin () {
   return Math.random().toString().slice(2, 12);
 }
 
-function getCb (data) {
+function getCb (data, types, report) {
   switch (parseInt(data.base)) {
     case 0:
       if (data.status == 1) {
@@ -80,8 +70,22 @@ function getCb (data) {
 }
 
 module.exports = function (data, callback) {
+  var attachments = [];
+  var variables = {
+    types: [],
+    report: {
+      a: '',
+      s: '',
+      m: '',
+      l: '',
+      xl:'',
+      t: ''
+    }
+  };
+  var types = variables.types;
+  var report = variables.report;
 
-  var cbFunc = getCb(data);
+  var cbFunc = getCb(data, types, report);
 
   row(function (err, model) {
     if (err) callback(err);
@@ -97,7 +101,6 @@ module.exports = function (data, callback) {
       model.find({_id: { $in: data.ips}}, function (err, rows) {
         if (err) callback(err);
         else {
-          var attachments = [];
           async.each(rows, cbFunc, function (err) {
             if (err) callback(err);
             else {
