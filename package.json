@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "nodemon server.js",
-    "start": "NODE_ENV=production nodejs server.js"
+    "start": "PROXY_ADMIN=test PROXY_PASSWORD=test NODE_ENV=production forever start —minUptime 60000 —spinSleepTime 30000 -w —watchDirectory './' server.js"
   },
   "dependencies": {
     "async": "^1.0.0",
