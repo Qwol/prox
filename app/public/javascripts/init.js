@@ -578,9 +578,9 @@ $(document).ready(function() {
           ids.push(item._id);
         });
 
-        if (aData.length === 1) {
+        if (aData.length === 1 ) {
           modal.find('.modal-body').html('Братюнь, ты выделил одну запись. Уверен что нужно ее удалить?');        
-          modal.find('.modal-footer').html('<button type="button" class="btn btn-default" data-dismiss="modal">Не, чет я погорячился.</button><button id="btn-delete" type="button" class="btn btn-primary">Агась, удаляем к чертям!</button>');
+          modal.find('.modal-footer').html('<label><input type="checkbox" id="fulldelete">Удалить всё</label><button type="button" class="btn btn-default" data-dismiss="modal">Не, чет я погорячился.</button><button id="btn-delete" type="button" class="btn btn-primary">Агась, удаляем к чертям!</button>');
         } else if (aData.length > 1 && aData.length < 5) {
           modal.find('.modal-body').html('Братюнь, ты выделил ' + aData.length + ' записи. Уверен что нужно их удалить?');        
           modal.find('.modal-footer').html('<button type="button" class="btn btn-default" data-dismiss="modal">Не, чет я погорячился.</button><button id="btn-delete" type="button" class="btn btn-primary">Агась, удаляем все к чертям!</button>');
@@ -596,7 +596,7 @@ $(document).ready(function() {
           $.ajax({
             url: "/rows",
             method: "DELETE",
-            data: {id: ids}
+            data: {id: ids, flag: (modal.find('#fulldelete:checked').length > 0)}
           }).done(function() {
             modal.modal('hide');
             table.ajax.reload();
