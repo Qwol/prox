@@ -237,7 +237,7 @@ $(document).ready(function() {
                 '</select>' +    
               '</div>' +
               '<div class="col-sm-4">' + 
-                '<input type="ip" class="form-control" disabled placeholder="IP">' +
+                '<input type="ip" class="form-control" placeholder="IP">' +
               '</div>' +
               '<div class="col-sm-2">' +
               '</div>' +
@@ -246,13 +246,13 @@ $(document).ready(function() {
         '</form>');        
         modal.find('.modal-footer').html('<button type="button" class="btn btn-default" data-dismiss="modal">Чет я передумал, отбой.</button><button id="btn-create" type="button" class="btn btn-primary">Добавляем запись!</button>');
 
-        if (aData.length === 1 && aData[0].status === 0) {
-          type = aData[0].type;
-          modal.find('.user-type option[value="' + type + '"]').prop('selected', true);
-          modal.find('input[placeholder="IP"]').val(aData[0]._id).prop("disabled", true);
-          modal.find('input[placeholder="Логин"]').val(type + login).change();
-          modal.find('input[placeholder="Пароль"]').val(pass).change();
-        }
+        // if (aData.length === 1 && aData[0].status === 0) {
+        //   type = aData[0].type;
+        //   modal.find('.user-type option[value="' + type + '"]').prop('selected', true);
+        //   modal.find('input[placeholder="IP"]').val(aData[0]._id).prop("disabled", true);
+        //   modal.find('input[placeholder="Логин"]').val(type + login).change();
+        //   modal.find('input[placeholder="Пароль"]').val(pass).change();
+        // }
 
         modal.find('input').change(function (event) {
           modal.find('.modal-error').html('');
@@ -282,20 +282,20 @@ $(document).ready(function() {
               $(arr[1]).val(pass);
             } else modal.find('.auth-data').val('').prop('disabled', false);
 
-            $.ajax({
-              url: "/freeip?type="+type,
-              method: "GET",
-            }).done(function (data) {           
-              if (data._id) {
-                modal.find('input[placeholder="IP"]').val(data._id).prop("disabled", true);
-              } else {
-                modal.find('input[placeholder="IP"]').val('').prop("disabled", false);
-              }
-            }).fail(function(jqXHR, textStatus, errorThrown) {
-              modal.find('.modal-error').html('<div class="alert alert-danger" role="alert">' +
-              '<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>' +
-              '<span class="sr-only">Error:</span>' + jqXHR.responseText + '</div>');
-            });
+            // $.ajax({
+            //   url: "/freeip?type="+type,
+            //   method: "GET",
+            // }).done(function (data) {           
+            //   if (data._id) {
+            //     modal.find('input[placeholder="IP"]').val(data._id).prop("disabled", true);
+            //   } else {
+            //     modal.find('input[placeholder="IP"]').val('').prop("disabled", false);
+            //   }
+            // }).fail(function(jqXHR, textStatus, errorThrown) {
+            //   modal.find('.modal-error').html('<div class="alert alert-danger" role="alert">' +
+            //   '<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>' +
+            //   '<span class="sr-only">Error:</span>' + jqXHR.responseText + '</div>');
+            // });
           } else {
             modal.find('.auth-data').val('').prop('disabled', true);
             modal.find('input[placeholder="IP"]').val('');

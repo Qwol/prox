@@ -34,7 +34,7 @@ module.exports = function (data, callback) {
           model.update({_id: data.ip}, {
             login: data.login,
             password: data.password,
-            status: 1,
+            status: 0,
             end_date: null
           }, function (err, saved_row) {
             if (err) callback(err);
@@ -53,7 +53,7 @@ module.exports = function (data, callback) {
             login: data.login,
             password: data.password,
             type: data.type,
-            status: 1,
+            status: 0,
             end_date: null
           }, function (err, saved_doc) {
             if (err) callback(err);
