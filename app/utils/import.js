@@ -1,5 +1,7 @@
 var row = require('../models/user');
 var parser = require('./parser');
+var writeSecret = require('./write-secret');
+var writeShaper = require('./write-shaper');
 
 module.exports = function (path, callback) {
   parser(path , function (err, result) {
@@ -8,10 +10,21 @@ module.exports = function (path, callback) {
       row(function (err, model) {        
         if (err) callback(err);
         else {
-          console.log(result);
           model.create(result, function (err, docs) {
             if (err) callback(err);
-            else callback();
+            else {
+              writeShaper(function (err) {
+                if (err) callback(err);
+                else {
+                  writeSecret(function (err) {
+                    if (err) callback(err);
+                    else {
+                      callback();
+                    }
+                  });
+                }
+              }); 
+            }
           });
         }
       });

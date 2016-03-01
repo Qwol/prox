@@ -53,7 +53,6 @@ module.exports = function (path, callback) {
     var index = remaining.indexOf('\n');
     while (index > -1) {
       var arr = remaining.substring(0, index).split("\t");
-      console.log(arr);
       remaining = remaining.substring(index + 1);
       if (arr.length === 5) result.push(parseLine(arr));
       index = remaining.indexOf('\n');
