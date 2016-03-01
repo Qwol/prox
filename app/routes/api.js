@@ -9,56 +9,8 @@ var remove_row = require('../utils/remove-row');
 // var switch_off = require('../utils/switch-off');
 var show_rows = require('../utils/show-rows');
 var show_ips = require('../utils/show-ips');
+var import_rows = require('../utils/import');
 var moment = require('moment');
-
-
-
-// //write active rows to file
-// router.copy('/rows', function(req, res, next) {
-//   write_file(function (err) {
-//     if (err) next(err);
-//     else {
-//       res.end({saved: true});
-//     }
-//   });
-// });
-
-
-
-// //switch on inactive rows
-// router.post('/rows/switchon', function(req, res, next) {
-//   var rows = req.body.rows? req.body.rows: undefined;
-//   switch_on(rows, function (err, string) {
-//     if (err) next(err);
-//     else {
-//       res.set({"Content-Disposition":"attachment; filename=\"Hello.txt\""});      
-//       res.send(string);
-//     }
-//   });
-// });
-
-// //switch on inactive rows
-// router.get('/rows/switchon', function(req, res, next) {
-//   // var rows = req.body.rows? req.body.rows: undefined;
-//   switch_on(undefined, function (err, string) {
-//     if (err) next(err);
-//     else {
-//       res.set({"Content-Disposition":"attachment; filename=\"" + moment().format() +".csv\""});      
-//       res.send(string);
-//     }
-//   });
-// });
-
-// router.get('/rows/switchoff', function(req, res, next) {
-//   // var rows = req.body.rows? req.body.rows: undefined;
-//   switch_off(undefined, function (err, string) {
-//     if (err) next(err);
-//     else {      
-//       res.end('OK');
-//     }
-//   });
-// });
-
 
 //init
 router.get('/', function(req, res) {
@@ -122,6 +74,18 @@ router.put('/rows', function(req, res, next) {
     else {
       res.status(200).end();
     }
+  });
+});
+
+//import
+router.get('/import', function(req, res, next) {
+  var path = req.query.path;
+  console.log(path);
+  import_rows(path, function (err) {
+    if (err) next(err);
+    else {
+      res.status(200).end();
+    } 
   });
 });
 module.exports = router;

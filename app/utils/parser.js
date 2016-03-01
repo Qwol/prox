@@ -1,8 +1,7 @@
 var fs = require('fs');
 var moment = require('moment');
 
-function parseLine (arr) {
-  if (arr.length === 5) {
+function parseLine (arr) {  
   var line = {
     _id: arr[3],
     login: arr[0],
@@ -37,6 +36,7 @@ function parseLine (arr) {
       break;                                                
     default: line.type = 't';
   }
+
   return line;
 }
 
@@ -52,18 +52,20 @@ module.exports = function (path, callback) {
     remaining += data;
     var index = remaining.indexOf('\n');
     while (index > -1) {
-      var arr = remaining.substring(0, index).split(" ");
+      var arr = remaining.substring(0, index).split("\t");
+      console.log(arr);
       remaining = remaining.substring(index + 1);
-      result.push(parseLine(arr));
+      if (arr.length === 5) result.push(parseLine(arr));
       index = remaining.indexOf('\n');
     }
   });
 
   input.on('end', function() {
     if (remaining.length > 0) {
-      result.push(remaining);
+      var arr = remaining.split("\t");
+      if (arr.length === 5) result.push(parseLine(arr));
     }
-    callback(result);
+    callback(null, result);
   });
 
   input.on('error', function(err) {
