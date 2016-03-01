@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "dev": "nodemon server.js",
+    "dev": "PROXY_ADMIN=test PROXY_PASSWORD=test nodemon server.js",
     "start": "PROXY_ADMIN=test PROXY_PASSWORD=test NODE_ENV=production forever start --minUptime 60000 --spinSleepTime 30000 -w --watchDirectory './' server.js"
   },
   "dependencies": {
