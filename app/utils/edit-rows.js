@@ -5,6 +5,7 @@ var row = require('../models/user');
 var async = require('async');
 var email = require('../config/app-config.js').email;
 var writeSecret = require('./write-secret');
+var config = require('../config/app-config.js')
 
 var transporter = nodemailer.createTransport();
 
