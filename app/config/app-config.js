@@ -8,6 +8,7 @@ var email = config.EMAIL? config.EMAIL: undefined;
 var secrets_path = config.FILE_SECRET? config.FILE_SECRET: undefined;
 var shaper_path = config.FILE_SHAPER? config.FILE_SHAPER: undefined;
 var user_path = config.FILE_USER? config.FILE_USER: undefined;
+var report_path = config.FILE_REPORT? (config.FILE_REPORT): '/base/file';
 var period = config.PERIOD? config.PERIOD: 600000;
 
 module.exports = { 
@@ -17,6 +18,7 @@ module.exports = {
   period: period,
   db_users: db_users,
   email: email, 
+  report_path: ((report_path[report_path.length-1] === '/')? report_path: (report_path + '/')),  
   secrets_path: secrets_path,
   shaper_path: shaper_path,
   user_path: user_path

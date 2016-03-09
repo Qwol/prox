@@ -106,11 +106,19 @@ module.exports = function (data, callback) {
             else {
               async.each(types, function (item, cbi) {  
                 // fs.writeFile('app/public/reports/' + item + '_' + moment(Date.now()).format("YYYY-MM-DD_HH:mm") + '.csv', report[item], {encoding: 'utf8'}, cbi);
+                
+                var name = item + '_' + moment(Date.now()).format("YYYY-MM-DD_HH:mm") + '.csv';
+                var data = report[item];                
                 attachments.push({
-                  filename: item + '_' + moment(Date.now()).format("YYYY-MM-DD_HH:mm") + '.csv',
-                  content: report[item]
+                  filename: name,
+                  content: data
                 });
-                cbi();
+                fs.writeFile(config.report_path + name, data, function (err) {
+                  if (err) {
+                    console.log(err);
+                    cbi();
+                  } else cbi();
+                });                
               }, function (err) {
                 if (err) callback(err);
                 else {
